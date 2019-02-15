@@ -1,0 +1,177 @@
+{{- /* 
+  Copyright 2019 Google LLC
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+      */ -}}
+<html>
+  {{- $tick := . -}}
+  <head>
+    <style>
+      .box {
+      border: solid 1px black;
+      border-bottom: solid 3px black;
+      border-right: solid 3px black;
+
+      width: 300px;
+      padding: 5px;
+      margin: 10px;
+      }
+      #topbar {
+      width: 100%;
+      font-size: 120%;
+      }
+
+      .top {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      }
+
+      div.content {
+      margin-left: 1em;
+      margin-right:1em;
+      font-family: monospace;
+      white-space: pre;
+      }
+
+      div.attachment {
+      margin-top: 10px;
+      margin-right:1em;
+      }
+      div.attachment::before {
+      content: "📎";
+      }
+
+      div.transaction {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: solid 1px grey;
+      }
+      div.transaction.type-Status {
+      background: #FFE;
+      }
+
+      div.theader {
+      width: 100%;
+      background: #BBB;
+      display: inline-flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      padding: 3px;
+      }
+      div.theader div {
+      padding-right: 10px;
+      }
+      div.theader .email {
+      font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <div id="topbar" class="box">
+        #{{ .Id }}: {{ .Subject }}
+      </div>
+
+      <div class="box" id="basics">
+        <h2>Basics</h2>
+        <div class="row">Id: {{ .Id }}</div>
+        <div class="row">Status: {{ .Status }}</div>
+        {{/* Need to get name for .Queue id: <div class="row">Queue: {{ .Queue }}</div> */}}
+      </div>
+
+      <div class="box" id="dates">
+        <h2>Dates</h2>
+        <div class="row">Created: {{ .Created }}</div>
+        <div class="row">Last Updated: {{ .LastUpdated }}
+          by {{ .LastUpdatedBy.RealName }} </div>
+        <div class="row">Closed: {{ .Closed }}</div>
+      </div>
+
+      <div class="box" id="cfs">
+        <h2>Custom Fields</h2>
+        {{ range $k, $v := .CustomFields }}
+        <div class="row">{{ $k }}: {{ $v }}</div>
+        {{ end }}
+      </div>
+
+      <div class="box" id="links">
+        <h2>Links</h2>
+        {{ range $k, $v := .Links }}
+        <div class="row">{{ $k }}:
+          {{- range $v -}}
+          {{if eq .Base $tick.Id}}
+          <a href="/ticket?id={{ .Target }}">{{ .Target }}</a>
+          {{else}}
+          <a href="/ticket?id={{ .Base }}">{{ .Base   }}</a>
+          {{end}}
+          {{ end }}
+        </div>
+        {{ end }}
+      </div>
+
+      <div class="box" id="people">
+        <h2>People</h2>
+        <div class="row">Owner: {{ .Owner.RealName }}
+          <{{ obfuscateEmail .Owner.EmailAddress }}>
+        </div>
+        <div class="row">Requestors: {{ range .Requestors }} {{ .RealName }}
+          <{{ obfuscateEmail .EmailAddress }}>
+            {{end}}
+        </div>
+        <div class="row">Cc: {{ range .Cc }} {{ .RealName }}
+          <{{ obfuscateEmail .EmailAddress }}>
+            {{end}}
+        </div>
+        <div class="row">AdminCc: {{ range .AdminCc }} {{ .RealName }}
+          <{{ obfuscateEmail .EmailAddress }}>
+            {{end}}
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      {{ range $toff, $t := .Transactions }}
+	  {{ if or (eq $t.Type "Correspond") (eq $t.Type "Create") (eq $t.Type "Status") }}
+      <div class="transaction type-{{$t.Type}}">
+        <div class="theader">
+          <div><a name="txn-{{ $t.id }}" href="#txn-{{ $t.id }}"> #</a></div>
+          <div>{{ $t.Created }}</div>
+          <div class="email">
+            {{- $t.Creator.RealName }}
+            <{{ obfuscateEmail $t.Creator.EmailAddress }}></div>
+        </div>
+		{{ range $aoff, $a := .Attachments}}
+        {{/* Need to show selected headers which requires parsing */}}
+          {{ if (eq $a.ContentType  "text/plain") }}
+             <div class="content">{{ $a.OriginalContent | html }}</div>
+          {{ else if $a.Filename  }}
+             <div class="attachment">
+               <a href="/Ticket/Attachment/{{$t.id}}/{{$a.id}}/{{$a.Filename}}">
+                 {{- $a.Filename -}}
+               </a> ({{ $a.OriginalContent | len }} bytes)
+             </div>
+          {{ end }}
+		{{ end }}
+        {{ if (eq $t.Type "Status") }}
+             Status changed from <b>{{$t.OldValue}}</b> to <b>{{$t.NewValue}}</b>.
+        {{ end }}
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+	 <ul>
+  </body>
+</html>

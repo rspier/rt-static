@@ -1,0 +1,56 @@
+{{- /* 
+  Copyright 2019 Google LLC
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+      */ -}}
+<html>
+{{ $Prefix := .Prefix }}    
+
+<form action="#">
+<input type="text" name="q" value="{{.Query}}">
+<input type="submit" value="Submit">
+
+<br>
+Num Results: 
+<select name="num">
+    {{ $num := .PageSize }}
+    {{ range .Sizes }}
+    <option value="{{.}}" {{ if eq . $num }}selected{{end}}>{{.}}</option>}
+    {{ end }}
+  </select>
+Sort Order:  <select name="order">
+      <option value="0" {{ if eq .Order "0" }}selected{{end}}>Asc</option>
+      <option value="1" {{ if eq .Order "1" }}selected{{end}}>Desc</option>
+  </select>
+
+</form>
+<br>
+<hr>
+
+<p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
+
+{{ range .Tickets }}
+<a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}">{{ .ID }}</a>: {{ .Subject }} (<i>{{.Status}}</i>)<br>
+{{ end }}
+{{ if .Next }}
+<a href="{{.Next}}">Next</a>
+{{ end}}
+{{ if .Prev }}
+<a href="{{.Prev}}">Prev</a>
+{{ end }}
+<br>
+<hr>
+Took {{ .Took }}
+
+</html>
