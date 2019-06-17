@@ -83,6 +83,7 @@ sub dump_user($) {
   }
 
   return {
+    Name         => $u->Name,
     NickName     => $u->NickName,
     RealName     => $u->RealName,
     EmailAddress => $u->EmailAddress,
