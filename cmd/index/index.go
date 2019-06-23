@@ -33,7 +33,7 @@ import (
 	"github.com/blevesearch/bleve"
 	"github.com/blevesearch/bleve/mapping"
 	"github.com/golang/glog"
-	"github.com/schollz/progressbar"
+	"github.com/schollz/progressbar/v2"
 	"golang.org/x/sync/semaphore"
 )
 
