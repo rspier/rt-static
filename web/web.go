@@ -45,6 +45,7 @@ func NewRouter(d *data.Data, pr string) http.Handler {
 	r := mux.NewRouter()
 	r.HandleFunc("/", indexHandler)
 	r.HandleFunc("/index.html", indexHandler)
+	r.HandleFunc("/robots.txt", robotsTxtHandler)
 	r.HandleFunc("/Ticket/Display.html", ticketHandler)
 	r.HandleFunc("/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", attachHandler)
 	r.HandleFunc("/Search/Simple.html", searchHandler)
@@ -242,4 +243,11 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v", err)
 		http.Error(w, fmt.Sprintf("%v", err), 500)
 	}
+}
+
+func robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	// Disallow everything for now.
+	w.Write([]byte(`User-agent: *
+Disallow: /`))
 }
