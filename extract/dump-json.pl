@@ -43,13 +43,15 @@ sub dump_ticket($);
 
 sub main() {
   my $outdir = "/var/tmp/out";
+  my $queue = "perl5";
   GetOptions("out=s" => \$outdir);
+  GetOptions("queue=s" => \$queue);
 
   # This is the query for the tickets that will be extracted:
   my $tx = RT::Tickets->new($RT::SystemUser);
   $tx->FromSQL(
-    q[
-  Queue = 'perl5'
+    qq[
+  Queue = '${queue}'
     AND
   Status != 'deleted'
 ]
