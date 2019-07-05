@@ -127,6 +127,13 @@ func obfuscateEmail(emailI interface{}) string {
 	return elide(parts[0], 4) + "@" + elide(parts[1], 3)
 }
 
+func isNotFound(err error) bool {
+	if err != nil {
+		return strings.Contains(err.Error(), "no such file or directory")
+	}
+	return false
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("%s/Search/Simple.html?q=status:*", prefix), http.StatusTemporaryRedirect)
 }
@@ -134,15 +141,21 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func ticketHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	d, err := tix.GetTicket(id)
+	if isNotFound(err) {
+		http.NotFound(w, r)
+		return
+	}
 	if err != nil {
-		http.Error(w, fmt.Sprintf("getTIcket(%v): %v", id, err), 500)
+		log.Printf("GetTicket(%v): %v", id, err)
+		http.Error(w, "Internal Error", 500)
 		return
 	}
 
 	err = tmpl.ExecuteTemplate(w, ticketTemplate, d)
 	if err != nil {
-		log.Printf("%v", err)
-		http.Error(w, fmt.Sprintf("%v", err), 500)
+		log.Printf("ExecuteTemplate(for ticket %v): %v", id, err)
+		http.Error(w, "Internal Error", 500)
+		return
 	}
 }
 
