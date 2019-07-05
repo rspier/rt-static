@@ -21,7 +21,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/rspier/rt-static/data"
 	"github.com/rspier/rt-static/web"
@@ -36,13 +38,33 @@ var (
 	prefix    = flag.String("prefix", "", "URL Prefix")
 )
 
+func waitForFile(f string, r int, d time.Duration) error {
+	for c := 0; c < r; c++ {
+		_, err := os.Stat(f)
+		if err == nil {
+			return nil
+		}
+		glog.Infof("file %q not found after %v", f, time.Duration(c)*d)
+		time.Sleep(d)
+	}
+	return fmt.Errorf("file %q still doesn't exist after waiting %v", f, d*time.Duration(r))
+
+}
+
 func main() {
 	flag.Parse()
+
+	// Allow for the data files not to exist at start up (for example,
+	// if they're being synced from elsehwere.)
+	err := waitForFile(filepath.Join(*indexPath, "store"), 10, 30*time.Second)
+	if err != nil {
+		glog.Fatal(err)
+	}
 
 	data, err := data.New(*dataPath, *indexPath)
 	defer data.Close()
 	if err != nil {
-		log.Fatal(err)
+		glog.Fatal(err)
 	}
 
 	r := web.NewRouter(data, *prefix)
