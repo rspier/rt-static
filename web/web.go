@@ -195,6 +195,10 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	d.Sizes = []int{10, 25, 50, 100}
 	d.Prefix = prefix
 
+	if d.Query == "*" {
+		d.Query = "status:*" // or we blow out the memory
+	}
+
 	start, _ := strconv.ParseUint(r.FormValue("start"), 10, 64)  // ignore error, get 0
 	pageSize, _ := strconv.ParseUint(r.FormValue("num"), 10, 64) // ignore error, get 0
 	if pageSize == 0 {
@@ -223,9 +227,9 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		sr.Fields = []string{"id", "status", "subject"}
 
-		searchResults, err := tix.Index.Search(sr)
+		searchResults, err := tix.Index.SearchInContext(r.Context(), sr)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("%v", err), 500)
+			http.Error(w, fmt.Sprintf("SearchInContext(%q) failed: %v", sr, err), 500)
 			fmt.Println(err)
 			return
 		}
