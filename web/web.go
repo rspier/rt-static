@@ -40,17 +40,22 @@ var (
 
 // NewRouter sets up the http.Handler s for our server.
 func NewRouter(d *data.Data, pr string) http.Handler {
+	log.Printf("starting server with prefix %q", pr)
 	tix = d
 	prefix = pr
 	r := mux.NewRouter()
-	r.HandleFunc("/", indexHandler)
-	r.HandleFunc("/index.html", indexHandler)
-	r.HandleFunc("/robots.txt", robotsTxtHandler)
-	r.HandleFunc("/Ticket/Display.html", ticketHandler)
-	r.HandleFunc("/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", attachHandler)
-	r.HandleFunc("/Search/Simple.html", searchHandler)
 
-	return logWrap(http.TimeoutHandler(r, time.Second, "response took too long"))
+	// We should use http.StripPrefix instead of prepending pr, but it
+	// wasn't working right, and requires logging changes to track the
+	// pre-StripPrefix URL.
+	r.HandleFunc(pr+"/", indexHandler)
+	r.HandleFunc(pr+"/index.html", indexHandler)
+	r.HandleFunc(pr+"/robots.txt", robotsTxtHandler)
+	r.HandleFunc(pr+"/Ticket/Display.html", ticketHandler)
+	r.HandleFunc(pr+"/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", attachHandler)
+	r.HandleFunc(pr+"/Search/Simple.html", searchHandler)
+
+	return logWrap(http.TimeoutHandler(r, 10*time.Second, "response took too long"))
 }
 
 func logWrap(h http.Handler) http.Handler {
