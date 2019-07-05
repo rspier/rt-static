@@ -112,6 +112,9 @@ func obfuscateEmail(emailI interface{}) string {
 	if len(email) == 0 {
 		return ""
 	}
+	if !strings.Contains(email, "@") {
+		return email
+	}
 	parts := strings.SplitN(email, "@", 2)
 	if len(parts) < 2 {
 		parts = append(parts, "")

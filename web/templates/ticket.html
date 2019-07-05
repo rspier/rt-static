@@ -1,18 +1,18 @@
-{{- /* 
+{{- /*
   Copyright 2019 Google LLC
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
       */ -}}
 <html>
   {{- $tick := . -}}
@@ -96,7 +96,7 @@
         <h2>Dates</h2>
         <div class="row">Created: {{ .Created }}</div>
         <div class="row">Last Updated: {{ .LastUpdated }}
-          by {{ .LastUpdatedBy.RealName }} </div>
+          by {{ obfuscateEmail .LastUpdatedBy.RealName }} </div>
         <div class="row">Closed: {{ .Closed }}</div>
       </div>
 
@@ -124,19 +124,19 @@
 
       <div class="box" id="people">
         <h2>People</h2>
-        <div class="row">Owner: {{ .Owner.RealName }}
+        <div class="row">Owner: {{ obfuscateEmail .Owner.RealName }}
           <{{ obfuscateEmail .Owner.EmailAddress }}>
         </div>
-        <div class="row">Requestors: {{ range .Requestors }} {{ .RealName }}
-          <{{ obfuscateEmail .EmailAddress }}>
+        <div class="row">Requestors: {{ range .Requestors -}}
+          {{ obfuscateEmail .RealName }} <{{ obfuscateEmail .EmailAddress }}>
             {{end}}
         </div>
-        <div class="row">Cc: {{ range .Cc }} {{ .RealName }}
-          <{{ obfuscateEmail .EmailAddress }}>
+        <div class="row">Cc: {{ range .Cc -}}
+          {{ obfuscateEmail .RealName }} <{{ obfuscateEmail .EmailAddress }}>
             {{end}}
         </div>
-        <div class="row">AdminCc: {{ range .AdminCc }} {{ .RealName }}
-          <{{ obfuscateEmail .EmailAddress }}>
+        <div class="row">AdminCc: {{ range .AdminCc -}}
+          {{ obfuscateEmail .RealName }}  <{{ obfuscateEmail .EmailAddress }}>
             {{end}}
         </div>
       </div>
@@ -150,7 +150,7 @@
           <div><a name="txn-{{ $t.id }}" href="#txn-{{ $t.id }}"> #</a></div>
           <div>{{ $t.Created }}</div>
           <div class="email">
-            {{- $t.Creator.RealName }}
+            {{- obfuscateEmail $t.Creator.RealName }}
             <{{ obfuscateEmail $t.Creator.EmailAddress }}></div>
         </div>
 		{{ range $aoff, $a := .Attachments}}
