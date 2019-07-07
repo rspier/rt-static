@@ -67,7 +67,8 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	r := web.NewRouter(data, *prefix)
+	s := &web.Server{Prefix: *prefix, Tix: data}
+	r := s.NewRouter()
 	http.Handle("/", r)
 
 	glog.Infof("Listening on port %v", *port)

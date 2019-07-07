@@ -33,27 +33,26 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var (
-	tix    *data.Data
-	prefix string
-)
+// Server holds state for the webserver.
+type Server struct {
+	Tix    *data.Data
+	Prefix string
+}
 
 // NewRouter sets up the http.Handler s for our server.
-func NewRouter(d *data.Data, pr string) http.Handler {
-	log.Printf("starting server with prefix %q", pr)
-	tix = d
-	prefix = pr
+func (s *Server) NewRouter() http.Handler {
+	log.Printf("starting server with prefix %q", s.Prefix)
 	r := mux.NewRouter()
 
 	// We should use http.StripPrefix instead of prepending pr, but it
 	// wasn't working right, and requires logging changes to track the
 	// pre-StripPrefix URL.
-	r.HandleFunc(pr+"/", indexHandler)
-	r.HandleFunc(pr+"/index.html", indexHandler)
-	r.HandleFunc(pr+"/robots.txt", robotsTxtHandler)
-	r.HandleFunc(pr+"/Ticket/Display.html", ticketHandler)
-	r.HandleFunc(pr+"/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", attachHandler)
-	r.HandleFunc(pr+"/Search/Simple.html", searchHandler)
+	r.HandleFunc(s.Prefix+"/", s.indexHandler)
+	r.HandleFunc(s.Prefix+"/index.html", s.indexHandler)
+	r.HandleFunc("/robots.txt", s.robotsTxtHandler)
+	r.HandleFunc(s.Prefix+"/Ticket/Display.html", s.ticketHandler)
+	r.HandleFunc(s.Prefix+"/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", s.attachHandler)
+	r.HandleFunc(s.Prefix+"/Search/Simple.html", s.searchHandler)
 
 	return logWrap(http.TimeoutHandler(r, 10*time.Second, "response took too long"))
 }
@@ -134,13 +133,13 @@ func isNotFound(err error) bool {
 	return false
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, fmt.Sprintf("%s/Search/Simple.html?q=status:*", prefix), http.StatusTemporaryRedirect)
+func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, fmt.Sprintf("%s/Search/Simple.html?q=status:*", s.Prefix), http.StatusTemporaryRedirect)
 }
 
-func ticketHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ticketHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
-	d, err := tix.GetTicket(id)
+	d, err := s.Tix.GetTicket(id)
 	if isNotFound(err) {
 		http.NotFound(w, r)
 		return
@@ -159,11 +158,11 @@ func ticketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func attachHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) attachHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	attID := vars["attachmentID"]
 
-	filename, contentType, content, err := tix.GetAttachment(attID)
+	filename, contentType, content, err := s.Tix.GetAttachment(attID)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -175,7 +174,7 @@ func attachHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(content)
 }
 
-func searchHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 	var d struct {
 		Query      string
 		Tickets    []Ticket
@@ -193,7 +192,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	q := r.FormValue("q")
 	d.Query = q
 	d.Sizes = []int{10, 25, 50, 100}
-	d.Prefix = prefix
+	d.Prefix = s.Prefix
 
 	if d.Query == "*" {
 		d.Query = "status:*" // or we blow out the memory
@@ -227,7 +226,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		sr.Fields = []string{"id", "status", "subject"}
 
-		searchResults, err := tix.Index.SearchInContext(r.Context(), sr)
+		searchResults, err := s.Tix.Index.SearchInContext(r.Context(), sr)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("SearchInContext(%q) failed: %v", sr, err), 500)
 			fmt.Println(err)
@@ -270,7 +269,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	// Disallow everything for now.
 	w.Write([]byte(`User-agent: *
