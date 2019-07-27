@@ -37,6 +37,7 @@ import (
 type Server struct {
 	Tix    *data.Data
 	Prefix string
+	Title  string
 }
 
 // NewRouter sets up the http.Handler s for our server.
@@ -187,12 +188,14 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		Sizes      []int
 		Order      string
 		Prefix     string
+		Title      string
 	}
 
 	q := r.FormValue("q")
 	d.Query = q
 	d.Sizes = []int{10, 25, 50, 100}
 	d.Prefix = s.Prefix
+	d.Title = s.Title
 
 	if d.Query == "*" {
 		d.Query = "status:*" // or we blow out the memory

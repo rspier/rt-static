@@ -36,6 +36,7 @@ var (
 	indexPath = flag.String("index", filepath.Join(*dataPath, "index.bleve"), "path to bleve index")
 	port      = flag.Int("port", 8080, "port to listen on")
 	prefix    = flag.String("prefix", "", "URL Prefix")
+	title     = flag.String("title", "", "Title")
 )
 
 func waitForFile(f string, r int, d time.Duration) error {
@@ -67,7 +68,7 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	s := &web.Server{Prefix: *prefix, Tix: data}
+	s := &web.Server{Prefix: *prefix, Tix: data, Title: *title}
 	r := s.NewRouter()
 	http.Handle("/", r)
 
