@@ -2,9 +2,17 @@ FROM golang:alpine as BUILDER
 
 RUN apk update && apk add --no-cache git
 WORKDIR /src
+
+# << bake dependencies into image
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+# >>
+
+# bring source into image
 COPY . .
 
-RUN go get -d -v github.com/rspier/rt-static/cmd/server
+# build
 RUN CGO_ENABLED=0 go build -o /go/bin/server github.com/rspier/rt-static/cmd/server
 
 FROM scratch
