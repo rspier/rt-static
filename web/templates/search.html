@@ -13,12 +13,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   
-      */ -}}
-<html>
-  <head>
-    <title>{{.Title}}</title>
-    <meta name="robots" content="noindex, nofollow">
-  </head>
+*/ -}}
+{{define "Title"}}Search{{end}}
+{{define "Body"}}
+{{ with .Content }}
 {{ $Prefix := .Prefix }}    
 
 <form action="#">
@@ -56,5 +54,7 @@ Sort Order:  <select name="order">
 <br>
 <hr>
 Took {{ .Took }}
+{{ end }}
+{{ end }}
 
-</html>
+

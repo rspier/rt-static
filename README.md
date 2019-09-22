@@ -8,7 +8,7 @@ keeping archived data available without a full RT instance underneath.
 
 ### server
 
-`server` is a webserver that serves the extracted data. 
+`server` is a webserver that serves the extracted data.
 
 ### extract/dump-json.pl
 
@@ -26,6 +26,22 @@ file per ticket.
 
 The `cli` tool can be used to query the generated bleve index from the command
 line.
+
+## Usage
+
+### Generate and Index
+
+```bash
+queue=perl5
+extract/dump-json.pl --out /rtjson/${queue} --queue ${queue}
+go run cmd/index/index.go -data /rtjson/${queue} --alsologtostderr --outdir /rtjson/${queue}
+```
+
+### Serve
+
+```bash
+go run cmd/server/server.go  --data /big/rt-static/perl5/ --index /big/rt-static/perl5/index.bleve
+```
 
 ## Disclaimers
 

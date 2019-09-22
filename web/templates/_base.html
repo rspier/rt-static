@@ -1,0 +1,119 @@
+{{define "_base"}}<!DOCTYPE html>
+{{- /*
+  Copyright 2019 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+      */ -}}
+<html>
+  {{- $tick := . -}}
+  <head>
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Roboto:400,900&display=swap');
+
+      body { font-family: 'Roboto', sans-serif; }
+      .box {
+      border: solid 1px black;
+      border-bottom: solid 3px black;
+      border-right: solid 3px black;
+
+      width: 300px;
+      padding: 5px;
+      margin: 10px;
+      }
+      #topbar {
+      width: 100%;
+      font-size: 120%;
+      }
+
+      .top {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      }
+
+      div.content {
+      margin-left: 1em;
+      margin-right:1em;
+      font-family: monospace;
+      white-space: pre;
+      }
+
+      div.attachment {
+      margin-top: 10px;
+      margin-right:1em;
+      }
+      div.attachment::before {
+      content: "📎";
+      }
+
+      div.transaction {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: solid 1px grey;
+      }
+      div.transaction.type-Status {
+      background: #FFE;
+      }
+
+      div.theader {
+      width: 100%;
+      background: #BBB;
+      display: inline-flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      padding: 3px;
+      }
+      div.theader div {
+      padding-right: 10px;
+      }
+      div.theader .email {
+      font-weight: 800;
+      }
+
+      /// Page stuff
+      div#pheader {
+      width: 100%;
+      padding: 5px;
+      background: blue;
+      color: white;
+      font-weight: 900;
+      margin-bottom: 1em;
+      clear: both;
+      height: 3em;
+      }
+      div#pfooter {
+      width: 100%;
+      padding: 5px;
+      background: blue;
+      color: white;
+      margin-top: 1em;
+      clear:both;
+      min-height: 3em;
+      }
+    </style>
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ template "Title" . }} | Perlbug Archive</title>
+  </head>
+  <body>
+    <div id="pheader">
+      Perlbug Archive: {{ template "Title" . }}
+    </div>
+    {{ template "Body" .}}
+    <div id="pfooter">
+      Footer content will go here eventualy.
+    </div>
+  </body>
+</html>
+{{ end }}

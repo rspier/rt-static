@@ -19,15 +19,16 @@ limitations under the License.
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/rspier/rt-static/data"
+	"github.com/rspier/rt-static/web/page"
 
 	"github.com/blevesearch/bleve"
 	"github.com/gorilla/mux"
@@ -89,15 +90,7 @@ var tmpl *template.Template
 const (
 	ticketTemplate = "ticket.html"
 	indexTemplate  = "index.html"
-	searchTemplate = "search.html"
 )
-
-func init() {
-	var funcs = template.FuncMap{
-		"obfuscateEmail": obfuscateEmail,
-	}
-	tmpl = template.Must(template.New("").Funcs(funcs).ParseGlob("web/templates/*.html"))
-}
 
 func elide(input string, show int) string {
 	if len(input) <= show {
@@ -138,6 +131,13 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("%s/Search/Simple.html?q=status:*", s.Prefix), http.StatusTemporaryRedirect)
 }
 
+var ticketTmpl = page.NewTemplate(
+	"ticket",
+	template.FuncMap{
+		"obfuscateEmail": obfuscateEmail,
+	},
+	"web/templates/ticket.html")
+
 func (s *Server) ticketHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	d, err := s.Tix.GetTicket(id)
@@ -151,12 +151,9 @@ func (s *Server) ticketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tmpl.ExecuteTemplate(w, ticketTemplate, d)
-	if err != nil {
-		log.Printf("ExecuteTemplate(for ticket %v): %v", id, err)
-		http.Error(w, "Internal Error", 500)
-		return
-	}
+	p := page.New()
+	p.Content = d
+	p.Render(w, ticketTmpl)
 }
 
 func (s *Server) attachHandler(w http.ResponseWriter, r *http.Request) {
@@ -174,6 +171,8 @@ func (s *Server) attachHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", contentType)
 	w.Write(content)
 }
+
+var searchTmpl = page.NewTemplate("search", nil, "web/templates/search.html")
 
 func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 	var d struct {
@@ -265,11 +264,9 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err := tmpl.ExecuteTemplate(w, searchTemplate, d)
-	if err != nil {
-		log.Printf("%v", err)
-		http.Error(w, fmt.Sprintf("%v", err), 500)
-	}
+	p := page.New()
+	p.Content = d
+	p.Render(w, searchTmpl)
 }
 
 func (s *Server) robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
