@@ -17,12 +17,16 @@ limitations under the License.
 */
 
 import (
+	"archive/zip"
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/rspier/rt-static/data"
@@ -52,12 +56,67 @@ func waitForFile(f string, r int, d time.Duration) error {
 
 }
 
+// extract the index.bleve directory from the provided zipfile
+func extractIndexBleve(filename string) (string, error) {
+	z, err := zip.OpenReader(filename)
+	if err != nil {
+		return "", err
+	}
+	defer z.Close()
+
+	d, err := ioutil.TempDir("", "bleve")
+	if err != nil {
+		return "", err
+	}
+
+	db := filepath.Join(d, "index.bleve")
+	err = os.Mkdir(db, 0700)
+	if err != nil {
+		return "", err
+	}
+
+	for _, f := range z.File {
+		if !strings.HasPrefix(f.Name, "index.bleve") {
+			continue
+		}
+		if f.FileInfo().IsDir() {
+			continue
+		}
+
+		in, err := f.Open()
+		if err != nil {
+			return "", err
+		}
+		defer in.Close()
+
+		out, err := os.OpenFile(filepath.Join(d, f.Name), os.O_CREATE|os.O_WRONLY, 0700)
+		if err != nil {
+			return "", err
+		}
+		defer out.Close()
+
+		_, err = io.Copy(out, in)
+		if err != nil {
+			return "", err
+		}
+	}
+	return db, nil
+}
+
 func main() {
 	flag.Parse()
+	var err error
+
+	if strings.HasSuffix(*indexPath, ".zip") {
+		*indexPath, err = extractIndexBleve(*indexPath)
+		if err != nil {
+			glog.Fatal(err)
+		}
+	}
 
 	// Allow for the data files not to exist at start up (for example,
 	// if they're being synced from elsehwere.)
-	err := waitForFile(filepath.Join(*indexPath, "store"), 10, 30*time.Second)
+	err = waitForFile(filepath.Join(*indexPath, "store"), 10, 30*time.Second)
 	if err != nil {
 		glog.Fatal(err)
 	}
