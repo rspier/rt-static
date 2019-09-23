@@ -19,6 +19,11 @@
 {{ with .Content }}
 {{ $Prefix := .Prefix }}    
 
+<div class="box" id="topbar">
+  Search
+</div>
+
+<div class="box fullwidth">
 <form action="#">
 <input type="text" name="q" value="{{.Query}}">
 <input type="submit" value="Submit">
@@ -38,7 +43,8 @@ Sort Order:  <select name="order">
 
 </form>
 <br>
-<hr>
+
+</div>
 
 <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
 
