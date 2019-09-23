@@ -46,20 +46,33 @@ Sort Order:  <select name="order">
 
 </div>
 
+<div class="box fullwidth">
+  <h2>Results</h2>
+
 <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
 
+<ul class="tickets">
 {{ range .Tickets }}
-<a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}">{{ .ID }}</a>: {{ .Subject }} (<i>{{.Status}}</i>)<br>
+<li class="ticket">
+<a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}">{{ .ID }}: {{ .Subject }}</a> <i>({{.Status}})</i>
+</li>
+{{ end }}
+</ul>
+
+<br>
+
+{{ if .Prev }}
+<a class="button" href="{{.Prev}}">◄  Prev</a>
 {{ end }}
 {{ if .Next }}
-<a href="{{.Next}}">Next</a>
-{{ end}}
-{{ if .Prev }}
-<a href="{{.Prev}}">Prev</a>
+<a class="button" href="{{.Next}}">Next  ►</a>
 {{ end }}
-<br>
-<hr>
-Took {{ .Took }}
+
+<p>
+<small>Search took {{ .Took }}</small>
+</p>
+</div>
+
 {{ end }}
 {{ end }}
 

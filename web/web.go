@@ -38,7 +38,7 @@ import (
 type Server struct {
 	Tix    *data.Data
 	Prefix string
-	Title  string
+	Site   string
 }
 
 // NewRouter sets up the http.Handler s for our server.
@@ -151,8 +151,7 @@ func (s *Server) ticketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := page.New()
-	p.Content = d
+	p := s.NewPage(d)
 	p.Render(w, ticketTmpl)
 }
 
@@ -187,14 +186,14 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		Sizes      []int
 		Order      string
 		Prefix     string
-		Title      string
+		Site       string
 	}
 
 	q := r.FormValue("q")
 	d.Query = q
 	d.Sizes = []int{10, 25, 50, 100}
 	d.Prefix = s.Prefix
-	d.Title = s.Title
+	d.Site = s.Site
 
 	if d.Query == "*" {
 		d.Query = "status:*" // or we blow out the memory
@@ -230,7 +229,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		searchResults, err := s.Tix.Index.SearchInContext(r.Context(), sr)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("SearchInContext(%q) failed: %v", sr, err), 500)
+			http.Error(w, fmt.Sprintf("SearchInContext(%v) failed: %v", sr, err), 500)
 			fmt.Println(err)
 			return
 		}
@@ -264,8 +263,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	p := page.New()
-	p.Content = d
+	p := s.NewPage(d)
 	p.Render(w, searchTmpl)
 }
 
@@ -274,4 +272,11 @@ func (s *Server) robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
 	// Disallow everything for now.
 	w.Write([]byte(`User-agent: *
 Disallow: /`))
+}
+
+func (s *Server) NewPage(c interface{}) *page.Page {
+	p := page.New()
+	p.Site = s.Site
+	p.Content = c
+	return p
 }

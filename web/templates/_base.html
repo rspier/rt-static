@@ -45,7 +45,7 @@
       }
 
       .fullwidth {
-        width: 98%
+        width: 98%;
         margin-left: 0;
       margin-right: 0;
       }
@@ -81,7 +81,7 @@
       }
 
       div.theader {
-      width: 100%;
+      width: 98%;
       background: #BBB;
       display: inline-flex;
       flex-direction: row;
@@ -96,9 +96,9 @@
       font-weight: 800;
       }
 
-      /// Page stuff
+      /* Page stuff */
       div#pheader {
-      width: 100%;
+      width: 98%;
       padding: 5px;
       background: blue;
       color: white;
@@ -107,8 +107,16 @@
       clear: both;
       height: 3em;
       }
+
+      .box#pheader2 {
+        border-left: solid 6px blue;
+        font-weight: 900;
+        font-size: 150%;
+        width:98%;
+      }
+
       div#pfooter {
-      width: 100%;
+      width: 98%;
       padding: 5px;
       background: blue;
       color: white;
@@ -116,16 +124,45 @@
       clear:both;
       min-height: 3em;
       }
+
+      a.button {
+        background: buttonface;
+        text-decoration: none;
+        border: solid 1px #999;
+        color: black;
+        padding: 4px;
+      }
+ul.tickets {
+  list-style-type: none;
+  padding-left: 2em;
+  text-indent: -2em;
+}
+      li.ticket {
+      }
+      .ticket a {
+        color: black;
+        text-decoration:none;
+      }
+      .ticket a:hover {
+        color: #777777;
+      }
+
+      .box#pfooter2 {
+        border-left: solid 6px green;
+        width:98%;
+      }
     </style>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{{ template "Title" . }} | Perlbug Archive</title>
   </head>
   <body>
-    <div id="pheader">
-      Perlbug Archive: {{ template "Title" . }}
+    <div class="box" id="pheader2">
+      Perlbug Archive: {{ .Site }}
     </div>
     {{ template "Body" .}}
-    <div id="pfooter">
+    <div class="box" id="pfooter2">
       Footer content will go here eventualy.
     </div>
   </body>
