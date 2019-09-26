@@ -1,77 +1,85 @@
-{{- /* 
+{{- /*
   Copyright 2019 Google LLC
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  
+
 */ -}}
 {{define "Title"}}Search{{end}}
 {{define "Body"}}
 {{ with .Content }}
-{{ $Prefix := .Prefix }}    
+{{ $Prefix := .Prefix }}
 
-<div class="box" id="topbar">
-  Search
-</div>
+    <main role="main">
 
-<div class="box fullwidth">
-<form action="#">
-<input type="text" name="q" value="{{.Query}}">
-<input type="submit" value="Submit">
+      <!-- Main jumbotron for a primary marketing message or call to action -->
 
-<br>
-Num Results: 
-<select name="num">
-    {{ $num := .PageSize }}
-    {{ range .Sizes }}
-    <option value="{{.}}" {{ if eq . $num }}selected{{end}}>{{.}}</option>}
-    {{ end }}
-  </select>
-Sort Order:  <select name="order">
-      <option value="0" {{ if eq .Order "0" }}selected{{end}}>Asc</option>
-      <option value="1" {{ if eq .Order "1" }}selected{{end}}>Desc</option>
-  </select>
+      <div class="jumbotron">
+        <div class="container">
+          <h2>Results</h2>
+          <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
+        </div>
+      </div>
 
-</form>
-<br>
+      <div class="container">
 
-</div>
-
-<div class="box fullwidth">
-  <h2>Results</h2>
-
-<p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
-
-<ul class="tickets">
-{{ range .Tickets }}
-<li class="ticket">
-<a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}">{{ .ID }}: {{ .Subject }}</a> <i>({{.Status}})</i>
-</li>
+      <div class="list-group">
+      {{ range .Tickets }}
+      <a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}" class="list-group-item list-group-item-action">
+<span class="badge badge-light badge-pill">{{ .ID }}</span>
+ {{ .Subject }}
+{{ if eq .Status "resolved" }}
+        <span class="badge badge-success badge-pill">{{.Status}}</span>
+{{ else }}
+        <span class="badge badge-secondary badge-pill">{{.Status}}</span>
 {{ end }}
-</ul>
+      </a>
+      {{ end }}
+      </div>
 
 <br>
-
+<div class="row justify-content-md-center">
+<nav aria-label="...">
+  <ul class="pagination">
 {{ if .Prev }}
-<a class="button" href="{{.Prev}}">◄  Prev</a>
+    <li class="page-item">
+      <a class="page-link" href="{{.Prev}}">◄ Previous</a>
+    </li>
+{{ else }}
+    <li class="page-item disabled">
+      <span class="page-link">◄ Previous</span>
+    </li>
 {{ end }}
 {{ if .Next }}
-<a class="button" href="{{.Next}}">Next  ►</a>
+    <li class="page-item">
+      <a href="{{.Next}}" class="page-link">Next ►</a>
+    </li>
+{{ else }}
+    <li class="page-item disabled">
+      <span class="page-link">Next ►</span>
+    </li>
 {{ end }}
-
-<p>
-<small>Search took {{ .Took }}</small>
-</p>
+  </ul>
+</nav>
 </div>
+
+<div class="row">
+<small>Search took {{ .Took }}</small>
+</div>
+
+      </div>
+
+    </main>
+
 
 {{ end }}
 {{ end }}

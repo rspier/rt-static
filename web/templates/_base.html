@@ -43,7 +43,7 @@
   <body>
 
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <a class="navbar-brand" href="{{$Prefix}}/">{{ template "Title" . }} | Perlbug Archive</a>
+      <a class="navbar-brand" href="{{$Prefix}}/">{{ .Site }} | Perlbug Archive</a>
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
@@ -62,8 +62,14 @@
 
     {{ template "Body" .}}
 
-    <footer class="container">
-      <p>© Perl Static RT 2019</p>
+
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">view RT on GitHub</a>
+        </p>
+        <p>© Perl Static RT 2019</p>
+      </div>
     </footer>
 
     <!-- Bootstrap core JavaScript
