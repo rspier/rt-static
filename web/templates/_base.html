@@ -18,153 +18,59 @@
 <html>
   {{- $tick := . -}}
   <head>
-    <style>
-      @import url('https://fonts.googleapis.com/css?family=Roboto:400,900&display=swap');
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <link rel="icon" href="{{ .Prefix }}/static/favicon.ico">
 
-      body { font-family: 'Roboto', sans-serif; }
-      .box {
-      border: solid 1px #999;
-      border-left: solid 6px red;
+      <title>{{ template "Title" . }} | Perlbug Archive</title>
 
-      width: 300px;
-      padding: 5px;
-      padding-left: 10px;
-      margin: 10px;
-      margin-left:0;
-      margin-right: 20px;
-      background: #eee;
-      }
-      .box h2 {
-        margin-top: 0;
-      }
-      #topbar {
-      width: 98%;
-      font-size: 120%;
-      margin-left: 0;
-      margin-right: 0;
-      }
+      <!-- Bootstrap core CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+       <link rel="stylesheet" href="{{ .Prefix }}/static/css/site.css">
 
-      .fullwidth {
-        width: 98%;
-        margin-left: 0;
-      margin-right: 0;
-      }
+     <meta name="robots" content="noindex, nofollow">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      .top {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      }
-
-      div.content {
-      margin-left: 1em;
-      margin-right:1em;
-      font-family: monospace;
-      white-space: pre;
-      }
-
-      div.attachment {
-      margin-top: 10px;
-      margin-right:1em;
-      }
-      div.attachment::before {
-      content: "📎";
-      }
-
-      div.transaction {
-      padding: 10px;
-      margin-bottom: 10px;
-      border: solid 1px grey;
-      }
-      div.transaction.type-Status {
-      background: #FFE;
-      }
-
-      div.theader {
-      width: 98%;
-      background: #BBB;
-      display: inline-flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      padding: 3px;
-      }
-      div.theader div {
-      padding-right: 10px;
-      }
-      div.theader .email {
-      font-weight: 800;
-      }
-
-      /* Page stuff */
-      div#pheader {
-      width: 98%;
-      padding: 5px;
-      background: blue;
-      color: white;
-      font-weight: 900;
-      margin-bottom: 1em;
-      clear: both;
-      height: 3em;
-      }
-
-      .box#pheader2 {
-        border-left: solid 6px blue;
-        font-weight: 900;
-        font-size: 150%;
-        width:98%;
-      }
-
-      div#pfooter {
-      width: 98%;
-      padding: 5px;
-      background: blue;
-      color: white;
-      margin-top: 1em;
-      clear:both;
-      min-height: 3em;
-      }
-
-      a.button {
-        background: buttonface;
-        text-decoration: none;
-        border: solid 1px #999;
-        color: black;
-        padding: 4px;
-      }
-ul.tickets {
-  list-style-type: none;
-  padding-left: 2em;
-  text-indent: -2em;
-}
-      li.ticket {
-      }
-      .ticket a {
-        color: black;
-        text-decoration:none;
-      }
-      .ticket a:hover {
-        color: #777777;
-      }
-
-      .box#pfooter2 {
-        border-left: solid 6px green;
-        width:98%;
-      }
-    </style>
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{{ template "Title" . }} | Perlbug Archive</title>
   </head>
   <body>
-    <div class="box" id="pheader2">
-      Perlbug Archive: {{ .Site }}
-    </div>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li>
+              <span style="font-size: 32px; color: white; padding-right: 25px">
+                    <a class="navbar-brand text-lg-left" href="/" style="font-size: 32px; color: white; padding-right: 25px"><i class="fas fa-igloo"></i> {{ .Site }}</a>
+              </span>
+            </li>
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search for a bug or case #..." aria-label="Search">
+          <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+
     {{ template "Body" .}}
-    <div class="box" id="pfooter2">
-      Footer content will go here eventualy.
-    </div>
+
+
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#"><i class="fa fa-github"></i> view RT on GitHub</a>
+        </p>
+        <p>© Perl Static RT 2019</p>
+      </div>
+    </footer>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   </body>
 </html>
 {{ end }}

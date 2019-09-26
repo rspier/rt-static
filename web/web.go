@@ -36,14 +36,15 @@ import (
 
 // Server holds state for the webserver.
 type Server struct {
-	Tix    *data.Data
-	Prefix string
-	Site   string
+	Tix       *data.Data
+	Prefix    string
+	Site      string
+	StaticDir string
 }
 
 // NewRouter sets up the http.Handler s for our server.
 func (s *Server) NewRouter() http.Handler {
-	log.Printf("starting server with prefix %q", s.Prefix)
+	log.Printf("starting server with prefix %q on port", s.Prefix)
 	r := mux.NewRouter()
 
 	// We should use http.StripPrefix instead of prepending pr, but it
@@ -55,6 +56,8 @@ func (s *Server) NewRouter() http.Handler {
 	r.HandleFunc(s.Prefix+"/Ticket/Display.html", s.ticketHandler)
 	r.HandleFunc(s.Prefix+"/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", s.attachHandler)
 	r.HandleFunc(s.Prefix+"/Search/Simple.html", s.searchHandler)
+	// route to serve static content
+	r.PathPrefix(s.Prefix + "/static").Handler(http.StripPrefix("/static", http.FileServer(http.Dir(s.StaticDir))))
 
 	return logWrap(http.TimeoutHandler(r, 10*time.Second, "response took too long"))
 }
@@ -276,6 +279,7 @@ Disallow: /`))
 func (s *Server) NewPage(c interface{}) *page.Page {
 	p := page.New()
 	p.Site = s.Site
+	p.Prefix = s.Prefix
 	p.Content = c
 	return p
 }

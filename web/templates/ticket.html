@@ -20,98 +20,169 @@
 
   {{- $tick := . -}}
 
-    <div class="top">
-      <div id="topbar" class="box">
-        Ticket #{{ .Id }}: {{ .Subject }}
-      </div>
+    <main role="main">
 
-      <div class="box" id="basics">
-        <h2>Basics</h2>
-        <div class="row">Id: {{ .Id }}</div>
-        <div class="row">Status: {{ .Status }}</div>
-        {{/* Need to get name for .Queue id: <div class="row">Queue: {{ .Queue }}</div> */}}
-      </div>
+      <!-- Main jumbotron for a primary marketing message or call to action -->
 
-      <div class="box" id="dates">
-        <h2>Dates</h2>
-        <div class="row">Created: {{ .Created }}</div>
-        <div class="row">Last Updated: {{ .LastUpdated }}
-          by {{ obfuscateEmail .LastUpdatedBy.RealName }} </div>
-        <div class="row">Closed: {{ .Closed }}</div>
-      </div>
-
-      <div class="box" id="cfs">
-        <h2>Custom Fields</h2>
-        {{ range $k, $v := .CustomFields }}
-        <div class="row">{{ $k }}: {{ $v }}</div>
-        {{ end }}
-      </div>
-
-      <div class="box" id="links">
-        <h2>Links</h2>
-        {{ range $k, $v := .Links }}
-        <div class="row">{{ $k }}:
-          {{- range $v -}}
-          {{if eq .Base $tick.Id}}
-          <a href="/ticket?id={{ .Target }}">{{ .Target }}</a>
-          {{else}}
-          <a href="/ticket?id={{ .Base }}">{{ .Base   }}</a>
-          {{end}}
-          {{ end }}
-        </div>
-        {{ end }}
-      </div>
-
-      <div class="box" id="people">
-        <h2>People</h2>
-        <div class="row">Owner: {{ obfuscateEmail .Owner.RealName }}
-          <{{ obfuscateEmail .Owner.EmailAddress }}>
-        </div>
-        <div class="row">Requestors: {{ range .Requestors -}}
-          {{ obfuscateEmail .RealName }} <{{ obfuscateEmail .EmailAddress }}>
-            {{end}}
-        </div>
-        <div class="row">Cc: {{ range .Cc -}}
-          {{ obfuscateEmail .RealName }} <{{ obfuscateEmail .EmailAddress }}>
-            {{end}}
-        </div>
-        <div class="row">AdminCc: {{ range .AdminCc -}}
-          {{ obfuscateEmail .RealName }}  <{{ obfuscateEmail .EmailAddress }}>
-            {{end}}
+      <div class="jumbotron">
+        <div class="container">
+          <h2>Reading Perl 5 Static RT #{{ .Id }}</h2>
+          <p><b>Subject:</b> {{ .Subject }}</p>
+          <div class="row justify-content-md-center">
+          <a class="btn btn-outline-primary" href="#" role="button" alt="continue the discussion on GitHub"><i class="fa ffab"></i> view ticket on GitHub #123</a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="bottom">
-      {{ range $toff, $t := .Transactions }}
-	  {{ if or (eq $t.Type "Correspond") (eq $t.Type "Create") (eq $t.Type "Status") }}
-      <div class="transaction type-{{$t.Type}}">
-        <div class="theader">
-          <div><a name="txn-{{ $t.id }}" href="#txn-{{ $t.id }}"> #</a></div>
-          <div>{{ $t.Created }}</div>
-          <div class="email">
-            {{- obfuscateEmail $t.Creator.RealName }}
-            <{{ obfuscateEmail $t.Creator.EmailAddress }}></div>
-        </div>
-		{{ range $aoff, $a := .Attachments}}
-        {{/* Need to show selected headers which requires parsing */}}
-          {{ if (eq $a.ContentType  "text/plain") }}
-             <div class="content">{{ $a.OriginalContent | html }}</div>
-          {{ else if $a.Filename  }}
-             <div class="attachment">
-               <a href="/Ticket/Attachment/{{$t.id}}/{{$a.id}}/{{$a.Filename}}">
-                 {{- $a.Filename -}}
-               </a> ({{ $a.OriginalContent | len }} bytes)
-             </div>
-          {{ end }}
-		{{ end }}
-        {{ if (eq $t.Type "Status") }}
-             Status changed from <b>{{$t.OldValue}}</b> to <b>{{$t.NewValue}}</b>.
-        {{ end }}
-      </div>
-      {{ end }}
-      {{ end }}
-    </div>
+      <div class="container">
+
+           <ul class="row list-unstyled">
+              <li class="col-lg-4 card">
+                 <h5>Basics</h5>
+                 <small class="text-muted">
+                    <dl class="row">
+                      <dt class="col-sm-4">Id</dt>
+                      <dd class="col-sm">{{ .Id }}</dd>
+                      <div class="w-100"></div>
+                      <dt class="col-sm-4">Status</dt>
+                      <dd class="col-sm">{{ .Status }}</dd>
+                      {{/* Need to get name for .Queue id: <div class="row">Queue: {{ .Queue }}</div> */}}
+                    </dl>
+                 </small>
+              </li>
+
+              <li class="col-lg-4 card">
+                 <h5>Dates</h5>
+                 <small class="text-muted">
+                  <div class="container">
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Created:</dt>
+                      <dd class="col-12 col-md">{{ .Created }}</dd>
+                    </div>
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Author:</dt>
+                      <dd class="col-12 col-md">{{ obfuscateEmail .LastUpdatedBy.RealName }}</dd>
+                    </div>
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Last Updated:</dt>
+                      <dd class="col-12 col-md">{{ .LastUpdated }}</dd>
+                    </div>
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Closed:</dt>
+                      <dd class="col-12 col-md-8">{{ .Closed }}</dd>
+                    </div>
+                  </div>
+
+                 </small>
+              </li>
+
+              <li class="col-lg-4 card">
+                 <h5>Custom fields</h5>
+                 <small class="text-muted">
+                  {{ range $k, $v := .CustomFields }}
+                  <div class="row">
+                    <dt class="col-6 col-md-4">{{ $k }}:</dt>
+                    <dd class="col-12 col-md">{{ $v }}</dd>
+                  </div>
+                  {{ end }}
+                 </small>
+              </li>
+           </ul>
+<!-- second row -->
+           <ul class="row list-unstyled">
+              <li class="col-lg-4">
+              </li>
+           <!-- links -->
+              <li class="col-lg-4 card">
+                 <h5>Links</h5>
+                 <small class="text-muted">
+                  <div class="container">
+                    {{ range $k, $v := .Links }}
+                    <div class="row">
+                      <dt class="col-6 col-md-5">{{ $k }}:</dt>
+                      {{- range $v -}}
+                      {{if eq .Base $tick.Id}}
+                      <dd class="col-12 col-md"><a href="/ticket?id={{ .Target }}">{{ .Target }}</a></dd>
+                      {{else}}
+                      <dd class="col-12 col-md"><a href="/ticket?id={{ .Base }}">{{ .Base   }}</a></dd>
+                      {{end}}
+                      {{ end }}
+                    </div>
+                    {{ end }}
+                  </div>
+                 </small>
+              </li>
+
+              <!-- people -->
+              <li class="col-lg-4 card">
+                 <h5>People</h5>
+                 <small class="text-muted">
+                  <div class="container">
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Owner:</dt>
+                      <dd class="col-12 col-md">{{ obfuscateEmail .Owner.RealName }}
+                      <{{ obfuscateEmail .Owner.EmailAddress }}></dd>
+                    </div>
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Requestors:</dt>
+                      <dd class="col-12 col-md">{{ range .Requestors -}}
+                      {{ obfuscateEmail .RealName }} <{{ obfuscateEmail .EmailAddress }}>
+                      {{end}}
+                      </dd>
+                    </div>
+                    <div class="row">
+                      <dt class="col-6 col-md-4">Cc:</dt>
+                      <dd class="col-12 col-md-8">{{ range .Cc -}}
+                      {{ obfuscateEmail .RealName }} <{{ obfuscateEmail .EmailAddress }}>
+                      {{end}}
+                      </dd>
+                    </div>
+                    <div class="row">
+                      <dt class="col-6 col-md-4">AdminCC:</dt>
+                      <dd class="col-12 col-md-8">{{ range .AdminCc -}}
+                      {{ obfuscateEmail .RealName }}  <{{ obfuscateEmail .EmailAddress }}>
+                      {{end}}
+                      </dd>
+                    </div>
+                  </div>
+                 </small>
+                </li>
+<!-- /second row -->
+              </ul>
+
+                <div class="bottom">
+                  {{ range $toff, $t := .Transactions }}
+                {{ if or (eq $t.Type "Correspond") (eq $t.Type "Create") (eq $t.Type "Status") }}
+                  <div class="jumbotron m0">
+                    <h4><a name="txn-{{ $t.id }}" href="#txn-{{ $t.id }}"> #</a>&nbsp;{{- obfuscateEmail $t.Creator.RealName }}
+                        <{{ obfuscateEmail $t.Creator.EmailAddress }}>
+                    </h4>
+                    <div class="theader">
+                      <div>{{ $t.Created }}</div>
+                    </div>
+                {{ range $aoff, $a := .Attachments}}
+                    {{/* Need to show selected headers which requires parsing */}}
+                      {{ if (eq $a.ContentType  "text/plain") }}
+                         <div class="content">{{ $a.OriginalContent | html }}</div>
+                      {{ else if $a.Filename  }}
+                         <div class="attachment">
+                           <a href="/Ticket/Attachment/{{$t.id}}/{{$a.id}}/{{$a.Filename}}">
+                             {{- $a.Filename -}}
+                           </a> ({{ $a.OriginalContent | len }} bytes)
+                         </div>
+                      {{ end }}
+                {{ end }}
+                    {{ if (eq $t.Type "Status") }}
+                         Status changed from <b>{{$t.OldValue}}</b> to <b>{{$t.NewValue}}</b>.
+                    {{ end }}
+                  </div>
+                  {{ end }} {{- /* if or */ -}}
+                  {{ end }} {{- /* range */ -}}
+                </div>
+      </div> <!-- /container -->
+
+    </main>
+
 
 {{ end }}
 {{ end }}
