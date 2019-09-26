@@ -15,11 +15,16 @@ COPY . .
 # build
 RUN CGO_ENABLED=0 go build -o /go/bin/server github.com/rspier/rt-static/cmd/server
 
+RUN touch /.empty
+
 FROM scratch
 
 WORKDIR /
 
 COPY --from=builder /src/web/templates/* /web/templates/
 COPY --from=builder /go/bin/server /server.bin
+# If we don't put something in the /tmp/ directory, it doesn't exist,
+# since this is FROM scratch.
+COPY --from=builder /.empty /tmp/.empty
 
 ENTRYPOINT ["/server.bin"]
