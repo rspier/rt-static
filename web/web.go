@@ -18,6 +18,7 @@ limitations under the License.
 */
 
 import (
+	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -43,8 +44,14 @@ type Server struct {
 
 // NewRouter sets up the http.Handler s for our server.
 func (s *Server) NewRouter() http.Handler {
-	log.Printf("starting server with prefix %q", s.Prefix)
+	log.Printf("starting server with prefix %q on port", s.Prefix)
 	r := mux.NewRouter()
+
+	var dir string
+
+	// server static content
+	flag.StringVar(&dir, "dir", "web/static", "the directory to serve files from. Defaults to web/static")
+	flag.Parse()
 
 	// We should use http.StripPrefix instead of prepending pr, but it
 	// wasn't working right, and requires logging changes to track the
@@ -55,6 +62,8 @@ func (s *Server) NewRouter() http.Handler {
 	r.HandleFunc(s.Prefix+"/Ticket/Display.html", s.ticketHandler)
 	r.HandleFunc(s.Prefix+"/Ticket/Attachment/{transactionID}/{attachmentID:[0-9]+}/{filename}", s.attachHandler)
 	r.HandleFunc(s.Prefix+"/Search/Simple.html", s.searchHandler)
+	// route to serve static content
+	r.PathPrefix(s.Prefix + "/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
 
 	return logWrap(http.TimeoutHandler(r, 10*time.Second, "response took too long"))
 }
