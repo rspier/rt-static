@@ -280,6 +280,7 @@ Disallow: /`))
 func (s *Server) NewPage(c interface{}) *page.Page {
 	p := page.New()
 	p.Site = s.Site
+	p.Prefix = s.Prefix
 	p.Content = c
 	return p
 }

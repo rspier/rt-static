@@ -22,19 +22,19 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <link rel="icon" href="/static/favicon.ico">
+      <link rel="icon" href="{{ .Prefix }}/static/favicon.ico">
 
       <title>{{ template "Title" . }} | Perlbug Archive</title>
 
       <!-- Bootstrap core CSS -->
-      <link href="/static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+      <link href="{{ .Prefix }}/static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
 
      <!-- Vendor CSS-->
-     <link rel="stylesheet" href="/static/vendor/fontawesome/css/all.min.css"> <!--load all styles -->
+     <link rel="stylesheet" href="{{ .Prefix }}/static/vendor/fontawesome/css/all.min.css"> <!--load all styles -->
 
       <!-- Custom styles for this template -->
-     <link href="/static/app/jumbotron.css" rel="stylesheet">
-     <link rel="stylesheet" href="/static/css/site.css">
+     <link href="{{ .Prefix }}/static/app/jumbotron.css" rel="stylesheet">
+     <link rel="stylesheet" href="{{ .Prefix }}/static/css/site.css">
 
      <meta name="robots" content="noindex, nofollow">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,9 +75,9 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/vendor/jquery/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="/static/vendor/bootstrap/popper.min.js"></script>
-    <script src="/static/vendor/bootstrap/bootstrap.min.js"></script>
+    <script src="{{ .Prefix }}/static/vendor/jquery/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="{{ .Prefix }}/static/vendor/bootstrap/popper.min.js"></script>
+    <script src="{{ .Prefix }}/static/vendor/bootstrap/bootstrap.min.js"></script>
 
   </body>
 </html>
