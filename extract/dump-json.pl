@@ -284,7 +284,7 @@ sub dump_ticket($) {
     DependedOnBy DependsOn);
   $h->{Links} = { map { $_ => [ dump_records($t->$_) ] } @linkTypes };
 
-  my $json = JSON->new->allow_nonref;
+  my $json = JSON->new->allow_nonref->canonical;
   my $j    = $json->pretty->encode($h);
 
   return $j;
