@@ -35,7 +35,7 @@
       <div class="list-group">
       {{ range .Tickets }}
       <a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}" class="list-group-item list-group-item-action">
-<span class="badge badge-light badge-pill">{{ .ID }}</span>
+<span class="badge badge-light badge-pill">RT #{{ .ID }}</span>
  {{ .Subject }}
 {{ if eq .Status "resolved" }}
         <span class="badge badge-success badge-pill">{{.Status}}</span>
