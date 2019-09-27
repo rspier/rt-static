@@ -41,6 +41,7 @@ var (
 	port      = flag.Int("port", 8080, "port to listen on")
 	prefix    = flag.String("prefix", "", "URL Prefix")
 	site      = flag.String("site", "$site", "Title")
+	staticDir = flag.String("dir", "web/static", "the directory to serve files from. Defaults to web/static")
 )
 
 func waitForFile(f string, r int, d time.Duration) error {
@@ -127,7 +128,7 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	s := &web.Server{Prefix: *prefix, Tix: data, Site: *site}
+	s := &web.Server{Prefix: *prefix, Tix: data, Site: *site, StaticDir: *staticDir}
 	r := s.NewRouter()
 	http.Handle("/", r)
 
