@@ -27,6 +27,9 @@
         <div class="container">
           <h2>Results</h2>
           <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
+          <div class="row justify-content-md-center">
+          <a class="btn btn-outline-primary" href="#" role="button" alt="continue the discussion on GitHub"><i class="fab fa-github"></i> view RT on GitHub</a>
+          </div>          
         </div>
       </div>
 
@@ -72,8 +75,12 @@
 </nav>
 </div>
 
-<div class="row">
-<small>Search took {{ .Took }}</small>
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto justify-content-md-center alert alert-info" role="alert">
+      <small>Search took {{ .Took }}</small>
+    </div>
+  </div>
 </div>
 
       </div>
