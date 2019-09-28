@@ -58,7 +58,7 @@ sub main() {
   $tx->OrderBy(FIELD => 'EffectiveId');
 
   my $progress = Term::ProgressBar->new(
-    { name => 'Tickets', count => $tx->Count, remove => 1 });
+    { name => 'Tickets', count => $tx->Count + 1, remove => 1 });
 
   my $i = 0;
   while (my $t = $tx->Next) {
@@ -72,6 +72,9 @@ sub main() {
     open my $fh, ">$fn" or die $!;
     print $fh $j;
   }
+
+  write_merged_tickets($outdir);
+  $progress->update($i++);
 }
 
 sub dump_user($) {
@@ -287,6 +290,32 @@ sub dump_ticket($) {
   my $j    = $json->pretty->encode($h);
 
   return $j;
+}
+
+# The easiest way to get a list of all the merged tickets is to go
+# straight to the database.
+sub dump_merged_tickets() {
+    my $dbh = $RT::Handle->dbh;
+    my $rows = $dbh->selectall_arrayref(
+	"SELECT Id,EffectiveID from Tickets where Id!=EffectiveID"
+
+    ) or die $dbh->errstr;
+
+    my %merged = map {
+	$_->[0] => $_->[1]
+    } @$rows;
+
+    my $json = JSON->new->allow_nonref->canonical;
+    return $json->pretty->encode(\%merged);
+}
+
+sub write_merged_tickets($) {
+    my $outdir = shift;
+
+    my $fn = $outdir . "/" . "merged" . ".json";
+    my $j = dump_merged_tickets();
+    open my $fh, ">$fn" or die $!;
+    print $fh $j;
 }
 
 main();
