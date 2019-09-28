@@ -89,7 +89,6 @@ var tmpl *template.Template
 
 const (
 	ticketTemplate = "ticket.html"
-	indexTemplate  = "index.html"
 )
 
 func elide(input string, show int) string {
