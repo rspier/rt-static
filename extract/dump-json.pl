@@ -28,9 +28,8 @@ use Term::ProgressBar;
 
 use RT;
 use RT::Queues;
-use RT::Ticket;
 use RT::Tickets;
-use RT::User;
+use RT::Ticket;
 use RT::User;
 
 RT::LoadConfig();
