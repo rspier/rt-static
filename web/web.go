@@ -18,11 +18,13 @@ limitations under the License.
 */
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -123,6 +125,10 @@ func obfuscateEmail(emailI interface{}) string {
 }
 
 func isNotFound(err error) bool {
+	// error wrapping is better than string matching
+	if errors.Is(err, os.ErrNotExist) {
+		return true
+	}
 	if err != nil {
 		return strings.Contains(err.Error(), "no such file or directory")
 	}

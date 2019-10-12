@@ -93,17 +93,18 @@ func (zr *zipReader) GetReader(id string) (io.ReadCloser, error) {
 	fn := fmt.Sprintf("%s.json", id)
 	f, ok := zr.Files[fn]
 	if !ok {
-		return nil, fmt.Errorf("%v not found in %v", fn, zr.zipfile)
+		return nil, fmt.Errorf("%w: %v not found in %v", os.ErrNotExist, fn, zr.zipfile)
 	}
 	return f.Open()
 }
 
 func (zr *zipReader) GetTicket(id string) (interface{}, error) {
 	r, err := zr.GetReader(id)
-	defer r.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer r.Close() // must happen after the error handling, because you can't close a nil handle.
+
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
