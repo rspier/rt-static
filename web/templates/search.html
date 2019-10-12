@@ -19,76 +19,75 @@
 {{ with .Content }}
 {{ $Prefix := .Prefix }}
 
-    <main role="main">
+<main role="main">
 
-      <!-- Main jumbotron for a primary marketing message or call to action -->
+  <!-- Main jumbotron for a primary marketing message or call to action -->
 
-      <div class="jumbotron">
-        <div class="container">
-          <h2>Static RT Tickets</h2>
-          <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
-          <div class="row justify-content-md-center">
-          <a class="btn btn-outline-primary" href="#" role="button" alt="continue the discussion on GitHub"><i class="fa fa-github"></i> view RT on GitHub</a>
-          </div>          
-        </div>
+  <div class="jumbotron">
+    <div class="container">
+      <h2>Static RT Tickets</h2>
+      <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
+      <div class="row justify-content-md-center">
+        <a class="btn btn-outline-primary" href="#" role="button" alt="continue the discussion on GitHub"><i
+            class="fa fa-github"></i> view RT on GitHub</a>
       </div>
-
-      <div class="container">
-
-      <div class="list-group">
-      {{ range .Tickets }}
-      <a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}" class="list-group-item list-group-item-action">
-<span class="badge badge-light badge-pill">RT #{{ .ID }}</span>
- {{ .Subject }}
-{{ if eq .Status "resolved" }}
-        <span class="badge badge-success badge-pill">{{.Status}}</span>
-{{ else }}
-        <span class="badge badge-secondary badge-pill">{{.Status}}</span>
-{{ end }}
-      </a>
-      {{ end }}
-      </div>
-
-<br>
-<div class="row justify-content-md-center">
-<nav aria-label="...">
-  <ul class="pagination">
-{{ if .Prev }}
-    <li class="page-item">
-      <a class="page-link" href="{{.Prev}}">◄ Previous</a>
-    </li>
-{{ else }}
-    <li class="page-item disabled">
-      <span class="page-link">◄ Previous</span>
-    </li>
-{{ end }}
-{{ if .Next }}
-    <li class="page-item">
-      <a href="{{.Next}}" class="page-link">Next ►</a>
-    </li>
-{{ else }}
-    <li class="page-item disabled">
-      <span class="page-link">Next ►</span>
-    </li>
-{{ end }}
-  </ul>
-</nav>
-</div>
-
-<div class="container">
-  <div class="row justify-content-md-center">
-    <div class="col-md-auto justify-content-md-center alert alert-info" role="alert">
-      <small>Search took {{ .Took }}</small>
     </div>
   </div>
-</div>
 
+  <div class="container">
+
+    <div class="list-group">
+      {{ range .Tickets }}
+      <a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}" class="list-group-item list-group-item-action">
+        <span class="badge badge-light badge-pill">RT #{{ .ID }}</span>
+        {{ .Subject }}
+        {{ if eq .Status "resolved" }}
+        <span class="badge badge-success badge-pill">{{.Status}}</span>
+        {{ else }}
+        <span class="badge badge-secondary badge-pill">{{.Status}}</span>
+        {{ end }}
+      </a>
+      {{ end }}
+    </div>
+
+    <br>
+    <div class="row justify-content-md-center">
+      <nav aria-label="...">
+        <ul class="pagination">
+          {{ if .Prev }}
+          <li class="page-item">
+            <a class="page-link" href="{{.Prev}}">◄ Previous</a>
+          </li>
+          {{ else }}
+          <li class="page-item disabled">
+            <span class="page-link">◄ Previous</span>
+          </li>
+          {{ end }}
+          {{ if .Next }}
+          <li class="page-item">
+            <a href="{{.Next}}" class="page-link">Next ►</a>
+          </li>
+          {{ else }}
+          <li class="page-item disabled">
+            <span class="page-link">Next ►</span>
+          </li>
+          {{ end }}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-md-center">
+        <div class="col-md-auto justify-content-md-center alert alert-info" role="alert">
+          <small>Search took {{ .Took }}</small>
+        </div>
       </div>
+    </div>
 
-    </main>
+  </div>
+
+</main>
 
 
 {{ end }}
 {{ end }}
-
-

@@ -16,14 +16,14 @@
 */
 
 div.content {
-        margin-left: 1em;
-        margin-right:1em;
-        font-family: monospace;
-        white-space: pre;
+  margin-left: 1em;
+  margin-right: 1em;
+  font-family: monospace;
+  white-space: pre;
 }
 
 /* Move down content because we have a fixed navbar that is 3.5rem tall */
+
 body {
   padding-top: 3.5rem;
 }
-

@@ -1,4 +1,5 @@
-{{define "_base"}}<!DOCTYPE html>
+{{define "_base"}}
+<!DOCTYPE html>
 {{- /*
   Copyright 2019 Google LLC
 
@@ -16,61 +17,70 @@
 
       */ -}}
 <html>
-  {{- $tick := . -}}
-  <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <link rel="icon" href="{{ .Prefix }}/static/favicon.ico">
+{{- $tick := . -}}
 
-      <title>{{ template "Title" . }} | Perlbug Archive</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="{{ .Prefix }}/static/favicon.ico">
 
-      <!-- Bootstrap core CSS -->
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-       <link rel="stylesheet" href="{{ .Prefix }}/static/css/site.css">
+  <title>{{ template "Title" . }} | Perlbug Archive</title>
 
-     <meta name="robots" content="noindex, nofollow">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ .Prefix }}/static/css/site.css">
 
-  </head>
-  <body>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+</head>
 
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li>
-              <span style="font-size: 32px; color: white; padding-right: 25px">
-                    <a class="navbar-brand text-lg-left" href="/" style="font-size: 32px; color: white; padding-right: 25px"><i class="fas fa-igloo"></i> {{ .Site }}</a>
-              </span>
-            </li>
+<body>
 
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search for a bug or case #..." aria-label="Search">
-          <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
-    </nav>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 
-    {{ template "Body" .}}
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li>
+          <span style="font-size: 32px; color: white; padding-right: 25px">
+            <a class="navbar-brand text-lg-left" href="/" style="font-size: 32px; color: white; padding-right: 25px"><i
+                class="fas fa-igloo"></i> {{ .Site }}</a>
+          </span>
+        </li>
 
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search for a bug or case #..." aria-label="Search">
+        <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+      </form>
+    </div>
+  </nav>
 
-    <footer class="text-muted">
-      <div class="container">
-        <p class="float-right">
-          <a href="#"><i class="fa fa-github"></i> view RT on GitHub</a>
-        </p>
-        <p>© Perl Static RT 2019</p>
-      </div>
-    </footer>
+  {{ template "Body" .}}
 
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  </body>
+  <footer class="text-muted">
+    <div class="container">
+      <p class="float-right">
+        <a href="#"><i class="fa fa-github"></i> view RT on GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
 {{ end }}
