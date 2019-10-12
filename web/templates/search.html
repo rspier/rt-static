@@ -25,17 +25,27 @@
 
   <div class="jumbotron">
     <div class="container">
-      <h2>{{ .Site }} RT Tickets</h2>
-      <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
+      <h2>Search</h2>
+      <form class="form-inline my-2 my-lg-0" action="{{.Prefix}}/Search/Simple.html">
+        <input name="q" value="{{.Query}}" class="w-75 form-control mr-sm-2" type="search" placeholder="Search"
+          aria-label="Search">
+        <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+      </form>
     </div>
   </div>
 
   <div class="container">
+    <h2>Results for "<i>{{.Query}}</i>"</h2>
 
+    {{ if gt .Total 0 }}
+    <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
+    {{ else }}
+    <p>No matching tickets found.</p>
+    {{ end }}
     <div class="list-group">
       {{ range .Tickets }}
       <a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}" class="list-group-item list-group-item-action">
-        <span class="badge badge-light badge-pill">RT #{{ .ID }}</span>
+        <span class="badge badge-light badge-pill">{{ .ID }}</span>
         {{ .Subject }}
         {{ if eq .Status "resolved" }}
         <span class="badge badge-success badge-pill">{{.Status}}</span>
@@ -48,7 +58,7 @@
 
     <br>
     <div class="row justify-content-md-center">
-      <nav aria-label="...">
+      <nav>
         <ul class="pagination">
           {{ if .Prev }}
           <li class="page-item">
