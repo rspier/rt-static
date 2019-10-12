@@ -52,6 +52,8 @@ func (s *Server) NewRouter() http.Handler {
 	// We should use http.StripPrefix instead of prepending pr, but it
 	// wasn't working right, and requires logging changes to track the
 	// pre-StripPrefix URL.
+	r.HandleFunc("/", s.indexHandler)
+	r.HandleFunc("/index.html", s.indexHandler)
 	r.HandleFunc(s.Prefix+"/", s.indexHandler)
 	r.HandleFunc(s.Prefix+"/index.html", s.indexHandler)
 	r.HandleFunc("/robots.txt", s.robotsTxtHandler)
