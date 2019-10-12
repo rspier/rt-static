@@ -36,12 +36,14 @@ import (
 )
 
 var (
-	dataPath  = flag.String("data", "/big/rt-static/out/", "path to json data")
-	indexPath = flag.String("index", filepath.Join(*dataPath, "index.bleve"), "path to bleve index")
-	port      = flag.Int("port", 8080, "port to listen on")
-	prefix    = flag.String("prefix", "", "URL Prefix")
-	site      = flag.String("site", "$site", "Title")
-	staticDir = flag.String("dir", "web/static", "the directory to serve files from. Defaults to web/static")
+	dataPath     = flag.String("data", "/big/rt-static/out/", "path to json data")
+	indexPath    = flag.String("index", filepath.Join(*dataPath, "index.bleve"), "path to bleve index")
+	port         = flag.Int("port", 8080, "port to listen on")
+	prefix       = flag.String("prefix", "", "URL Prefix")
+	site         = flag.String("site", "Perl 5 RT Archive", "Site Title")
+	shortSite    = flag.String("shortsite", "Perl 5", "Short name of Site")
+	gitHubPrefix = flag.String("githubprefix", "https://github.com/perl/perl5", "Prefix of GitHub links")
+	staticDir    = flag.String("dir", "web/static", "the directory to serve files from. Defaults to web/static")
 )
 
 func waitForFile(f string, r int, d time.Duration) error {
@@ -128,7 +130,14 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	s := &web.Server{Prefix: *prefix, Tix: data, Site: *site, StaticDir: *staticDir}
+	s := &web.Server{
+		Prefix:       *prefix,
+		Tix:          data,
+		Site:         *site,
+		ShortSite:    *shortSite,
+		StaticDir:    *staticDir,
+		GitHubPrefix: *gitHubPrefix,
+	}
 	r := s.NewRouter()
 	http.Handle("/", r)
 

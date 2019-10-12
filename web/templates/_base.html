@@ -17,7 +17,6 @@
 
       */ -}}
 <html>
-{{- $tick := . -}}
 
 <head>
   <meta charset="utf-8">
@@ -60,6 +59,10 @@
       </form>
     </div>
   </nav>
+  <div id="moved" class="container">
+    <p>{{ .ShortSite }} tickets have moved to <a href="{{ .GitHubPrefix }}"><i class="fa fa-github"></i> GitHub</a>.
+      This site is a static archive of tickets from rt.perl.org.</p>
+  </div>
 
   {{ template "Body" .}}
 
@@ -67,7 +70,7 @@
     <div class="container">
       <p class="float-right">
         <a href="https://github.com/rspier/rt-static">
-          <i class="fa fa-github"></i>fork on GitHub</a>
+          <i class="fa fa-github"></i> site source on GitHub</a>
       </p>
     </div>
   </footer>

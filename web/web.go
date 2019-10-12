@@ -38,10 +38,12 @@ import (
 
 // Server holds state for the webserver.
 type Server struct {
-	Tix       *data.Data
-	Prefix    string
-	Site      string
-	StaticDir string
+	Tix          *data.Data
+	Prefix       string
+	Site         string
+	ShortSite    string // Perl5 or Perl6
+	StaticDir    string
+	GitHubPrefix string // https://github.com/org/repo
 }
 
 // NewRouter sets up the http.Handler s for our server.
@@ -288,6 +290,8 @@ func (s *Server) NewPage(id string, c interface{}) *page.Page {
 	p := page.New(id)
 	p.Site = s.Site
 	p.Prefix = s.Prefix
+	p.GitHubPrefix = s.GitHubPrefix
+	p.ShortSite = s.ShortSite
 	p.Content = c
 	return p
 }

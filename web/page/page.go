@@ -23,8 +23,10 @@ import (
 )
 
 type Page struct {
-	Prefix string
-	Site   string
+	Prefix       string
+	Site         string
+	ShortSite    string
+	GitHubPrefix string
 	// Title is defined in the template... would it be simpler if it was here?
 	Content interface{}
 	ID      string

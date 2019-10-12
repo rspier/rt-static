@@ -36,3 +36,7 @@ body {
 #searchpage form#headersearch {
   display: none;
 }
+
+div#moved.container {
+  margin-top: 1em;
+}
