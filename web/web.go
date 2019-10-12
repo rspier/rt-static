@@ -161,7 +161,7 @@ func (s *Server) ticketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := s.NewPage(d)
+	p := s.NewPage("ticket", d)
 	p.Render(w, ticketTmpl)
 }
 
@@ -273,7 +273,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	p := s.NewPage(d)
+	p := s.NewPage("search", d)
 	p.Render(w, searchTmpl)
 }
 
@@ -284,8 +284,8 @@ func (s *Server) robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
 Disallow: /`))
 }
 
-func (s *Server) NewPage(c interface{}) *page.Page {
-	p := page.New()
+func (s *Server) NewPage(id string, c interface{}) *page.Page {
+	p := page.New(id)
 	p.Site = s.Site
 	p.Prefix = s.Prefix
 	p.Content = c

@@ -27,6 +27,7 @@ type Page struct {
 	Site   string
 	// Title is defined in the template... would it be simpler if it was here?
 	Content interface{}
+	ID      string
 }
 
 func (p *Page) Render(w http.ResponseWriter, tmpl *template.Template) {
@@ -37,8 +38,8 @@ func (p *Page) Render(w http.ResponseWriter, tmpl *template.Template) {
 	}
 }
 
-func New() *Page {
-	return &Page{}
+func New(id string) *Page {
+	return &Page{ID: id}
 }
 
 var commonSources = []string{

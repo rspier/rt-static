@@ -28,7 +28,11 @@ body {
   padding-top: 3.5rem;
 }
 
-#ticket .card {
+#ticketpage .card {
   margin: .25em;
-  padding .75em;
+  padding: .75em;
+}
+
+#searchpage form#headersearch {
+  display: none;
 }
