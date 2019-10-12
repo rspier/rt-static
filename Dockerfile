@@ -21,7 +21,8 @@ FROM scratch
 
 WORKDIR /
 
-COPY --from=builder /src/web/templates/* /web/templates/
+COPY --from=builder /src/web/templates/ /web/templates/
+COPY --from=builder /src/web/static/ /web/static/
 COPY --from=builder /go/bin/server /server.bin
 # If we don't put something in the /tmp/ directory, it doesn't exist,
 # since this is FROM scratch.
