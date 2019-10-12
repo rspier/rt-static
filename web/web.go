@@ -256,7 +256,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		d.Total = searchResults.Total
 		d.Took = searchResults.Took
-		d.Start = start
+		d.Start = start + 1
 		d.PageSize = pageSize
 		d.End = start + pageSize
 		if d.End > d.Total {
