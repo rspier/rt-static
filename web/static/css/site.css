@@ -27,3 +27,8 @@ div.content {
 body {
   padding-top: 3.5rem;
 }
+
+#ticket .card {
+  margin: .25em;
+  padding .75em;
+}
