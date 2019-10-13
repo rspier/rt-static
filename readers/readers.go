@@ -46,12 +46,16 @@ func NewFileReader(root string) (*fileReader, error) {
 	}, nil
 }
 
-func (fr fileReader) GetReader(id string) (io.ReadCloser, error) {
-	return os.Open(filepath.Join(fr.Root, string(id)+".json"))
+func (fr fileReader) GetJSON(id string) (io.ReadCloser, error) {
+	return fr.GetFile(string(id) + ".json")
+}
+
+func (fr fileReader) GetFile(name string) (io.ReadCloser, error) {
+	return os.Open(filepath.Join(fr.Root, name))
 }
 
 func (fr fileReader) GetTicket(id string) (interface{}, error) {
-	r, err := fr.GetReader(id)
+	r, err := fr.GetJSON(id)
 	defer r.Close()
 	if err != nil {
 		return nil, err
@@ -89,8 +93,11 @@ func NewZipReader(filename string) (*zipReader, error) {
 	return zr, nil
 }
 
-func (zr *zipReader) GetReader(id string) (io.ReadCloser, error) {
-	fn := fmt.Sprintf("%s.json", id)
+func (zr *zipReader) GetJSON(id string) (io.ReadCloser, error) {
+	return zr.GetFile(fmt.Sprintf("%s.json", id))
+}
+
+func (zr *zipReader) GetFile(fn string) (io.ReadCloser, error) {
 	f, ok := zr.Files[fn]
 	if !ok {
 		return nil, fmt.Errorf("%w: %v not found in %v", os.ErrNotExist, fn, zr.zipfile)
@@ -99,7 +106,7 @@ func (zr *zipReader) GetReader(id string) (io.ReadCloser, error) {
 }
 
 func (zr *zipReader) GetTicket(id string) (interface{}, error) {
-	r, err := zr.GetReader(id)
+	r, err := zr.GetJSON(id)
 	if err != nil {
 		return nil, err
 	}

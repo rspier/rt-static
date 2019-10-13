@@ -27,10 +27,12 @@
   <div class="jumbotron">
     <div class="container">
       <h2>RT #{{ .Id }}: {{ .Subject }}</h2>
+      {{ if ne .GitHubIssue "" }}
       <div class="row justify-content-md-center">
-        <a class="btn btn-primary" href="{{ $gitHubPrefix }}" role="button" alt="View on GitHub">
+        <a class="btn btn-primary" href="{{ $gitHubPrefix }}/issues/{{ .GitHubIssue }}" role="button" alt="View on GitHub">
           <i class="fa fa-github"></i> View on GitHub</a> {{ .GitHubPrefix }}
       </div>
+      {{ end }}
     </div>
   </div>
 

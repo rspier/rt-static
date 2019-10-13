@@ -17,10 +17,14 @@ limitations under the License.
 */
 import (
 	"encoding/base64"
+	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
+	"os"
+	"reflect"
 	"strings"
 
 	"github.com/blevesearch/bleve"
@@ -31,7 +35,8 @@ import (
 // TicketSource describes the interface of the ticket reader classes we use.
 type TicketSource interface {
 	GetTicket(id string) (interface{}, error)
-	GetReader(id string) (io.ReadCloser, error)
+	GetJSON(id string) (io.ReadCloser, error)
+	GetFile(id string) (io.ReadCloser, error)
 }
 
 // TODO: fixme data.Data stutters
@@ -40,6 +45,7 @@ type Data struct {
 	ts                TicketSource
 	attachmentMetaMap map[string]AttachmentMeta
 	ticketIndex       []*IndexTicket
+	rtGitHubMap       map[string]string
 	Index             bleve.Index
 }
 
@@ -62,20 +68,53 @@ func New(dataPath string, indexPath string) (*Data, error) {
 	glog.Info("done opening bleve")
 	d := Data{ts: ticketSource, Index: index}
 
-	fh, err := ticketSource.GetReader("index")
+	err = d.newIndex()
 	if err != nil {
 		return nil, err
+	}
+
+	err = d.newRTGitHubMap()
+	if err != nil {
+		return nil, err
+	}
+
+	return &d, nil
+}
+
+func (d *Data) Close() {
+	d.Index.Close()
+}
+
+func (d *Data) newIndex() error {
+	fh, err := d.ts.GetJSON("index")
+	if err != nil {
+		return err
 	}
 	defer fh.Close()
 	err = d.LoadIndex(fh)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &d, nil
+	return nil
 }
 
-func (d *Data) Close() {
-	d.Index.Close()
+func (d *Data) newRTGitHubMap() error {
+	d.rtGitHubMap = make(map[string]string)
+	fh, err := d.ts.GetFile("rtgithub.csv")
+	if errors.Is(err, os.ErrNotExist) {
+		// this map is optional, but definitely nice to have
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	defer fh.Close()
+	err = d.LoadRTGitHubMap(fh)
+	if err != nil {
+		// return err ?
+		log.Fatal(err)
+	}
+	return nil
 }
 
 type IndexTicket struct {
@@ -113,6 +152,19 @@ func (d *Data) processIndexTicket(t *IndexTicket) error {
 	return nil
 }
 
+// LoadRTGitHubMap loads the mapping of old ids to the new ones.
+func (d *Data) LoadRTGitHubMap(fh io.Reader) error {
+	c := csv.NewReader(fh)
+	rs, err := c.ReadAll()
+	if err != nil {
+		return err
+	}
+	for _, row := range rs {
+		d.rtGitHubMap[row[0]] = row[1]
+	}
+	return nil
+}
+
 // LoadIndex loads an index.json file.
 func (d *Data) LoadIndex(fh io.Reader) error {
 	j := json.NewDecoder(fh)
@@ -145,7 +197,16 @@ func (d *Data) LoadIndex(fh io.Reader) error {
 }
 
 func (d *Data) GetTicket(id string) (interface{}, error) {
-	return d.ts.GetTicket(id)
+	t, err := d.ts.GetTicket(id)
+	if err != nil {
+		return t, err
+	}
+	// use reflection to add a GitHubIssue field.  Ticket should really be a proper type.
+	g, _ := d.rtGitHubMap[id] // throw away ok, because we want the default value of "" if not found.
+	v := reflect.ValueOf(t)
+	v.SetMapIndex(reflect.ValueOf("GitHubIssue"), reflect.ValueOf(g))
+
+	return t, nil
 }
 
 // GetAttachment returns the filename, content-type, and bytes of an attachment.
