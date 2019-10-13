@@ -128,6 +128,23 @@ func obfuscateEmail(emailI interface{}) string {
 	return elide(parts[0], 4) + "@" + elide(parts[1], 3)
 }
 
+func statusToBadgeClass(status string) string {
+
+	switch status {
+	case "new":
+		return "badge-primary"
+	case "open":
+		return "badge-info"
+	case "resolved":
+		return "badge-dark"
+	case "pending release":
+		return "badge-warning"
+	case "rejected":
+		return "badge-secondary"
+	}
+	return "badge-light"
+}
+
 func isNotFound(err error) bool {
 	// error wrapping is better than string matching
 	if errors.Is(err, os.ErrNotExist) {
@@ -183,7 +200,11 @@ func (s *Server) attachHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(content)
 }
 
-var searchTmpl = page.NewTemplate("search", nil, "web/templates/search.html")
+var searchTmpl = page.NewTemplate(
+	"search", template.FuncMap{
+		"statusToBadgeClass": statusToBadgeClass,
+	},
+	"web/templates/search.html")
 
 func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 	var d struct {
@@ -226,7 +247,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 	case "0", "1":
 		break
 	default:
-		order = "0"
+		order = "1" // Descending
 	}
 
 	if q != "" {
@@ -288,6 +309,7 @@ func (s *Server) robotsTxtHandler(w http.ResponseWriter, r *http.Request) {
 Disallow: /`))
 }
 
+// NewPage creates a new Page object and initializes the fields.
 func (s *Server) NewPage(id string, c interface{}) *page.Page {
 	p := page.New(id)
 	p.Site = s.Site

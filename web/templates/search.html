@@ -53,11 +53,7 @@
       <a href="{{$Prefix}}/Ticket/Display.html?id={{ .ID}}" class="list-group-item list-group-item-action">
         <span class="badge badge-light badge-pill">{{ .ID }}</span>
         {{ .Subject }}
-        {{ if eq .Status "resolved" }}
-        <span class="badge badge-success badge-pill">{{.Status}}</span>
-        {{ else }}
-        <span class="badge badge-secondary badge-pill">{{.Status}}</span>
-        {{ end }}
+        <span class="badge badge-pill {{statusToBadgeClass .Status}}">{{.Status}}</span>
       </a>
       {{ end }}
     </div>
