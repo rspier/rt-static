@@ -188,6 +188,7 @@ var searchTmpl = page.NewTemplate("search", nil, "web/templates/search.html")
 func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 	var d struct {
 		Query      string
+		Error      string
 		Tickets    []Ticket
 		Start      uint64
 		End        uint64
@@ -204,6 +205,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 	q := r.FormValue("q")
 	d.Query = q
 	d.Sizes = []int{10, 25, 50, 100}
+	// TODO: These are available on the page object.
 	d.Prefix = s.Prefix
 	d.Site = s.Site
 
@@ -241,37 +243,37 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		searchResults, err := s.Tix.Index.SearchInContext(r.Context(), sr)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("SearchInContext(%v) failed: %v", sr, err), 500)
-			fmt.Println(err)
-			return
+			d.Error = err.Error()
 		}
 
-		for _, h := range searchResults.Hits {
-			f := h.Fields
-			d.Tickets = append(d.Tickets,
-				Ticket{
-					ID:      fmt.Sprintf("%.0f", f["id"].(float64)),
-					Subject: f["subject"].(string),
-					Status:  f["status"].(string),
-				})
-		}
+		if searchResults != nil {
+			for _, h := range searchResults.Hits {
+				f := h.Fields
+				d.Tickets = append(d.Tickets,
+					Ticket{
+						ID:      fmt.Sprintf("%.0f", f["id"].(float64)),
+						Subject: f["subject"].(string),
+						Status:  f["status"].(string),
+					})
+			}
 
-		d.Total = searchResults.Total
-		d.Took = searchResults.Took
-		d.Start = start + 1
-		d.PageSize = pageSize
-		d.End = start + pageSize
-		if d.End > d.Total {
-			d.End = d.Total
-		}
+			d.Total = searchResults.Total
+			d.Took = searchResults.Took
+			d.Start = start + 1
+			d.PageSize = pageSize
+			d.End = start + pageSize
+			if d.End > d.Total {
+				d.End = d.Total
+			}
 
-		const params = "?q=%s&start=%d&num=%d&order=%s"
-		if uint64(start+pageSize) < searchResults.Total {
-			d.Next = fmt.Sprintf(params, url.QueryEscape(q), start+pageSize, pageSize, order)
-		}
-		prev := start - pageSize
-		if prev >= 0 && prev < 999999999 { // mixing uint and int and subtraction is hard
-			d.Prev = fmt.Sprintf(params, url.QueryEscape(q), prev, pageSize, order)
+			const params = "?q=%s&start=%d&num=%d&order=%s"
+			if uint64(start+pageSize) < searchResults.Total {
+				d.Next = fmt.Sprintf(params, url.QueryEscape(q), start+pageSize, pageSize, order)
+			}
+			prev := start - pageSize
+			if prev >= 0 && prev < 999999999 { // mixing uint and int and subtraction is hard
+				d.Prev = fmt.Sprintf(params, url.QueryEscape(q), prev, pageSize, order)
+			}
 		}
 	}
 

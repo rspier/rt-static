@@ -37,6 +37,12 @@
   <div class="container">
     <h2>Results for "<i>{{.Query}}</i>"</h2>
 
+    {{ if ne .Error "" }}
+    <div class="alert alert-danger" role="alert">
+      {{ .Error }}
+    </div>
+    {{ end }}
+
     {{ if gt .Total 0 }}
     <p>Tickets {{ .Start }} - {{ .End }} of {{ .Total }}</p>
     {{ else }}
