@@ -194,8 +194,18 @@ func (s *Server) attachHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Disposition",
-		fmt.Sprintf("attachment; filename=%q", filename))
+	if strings.HasSuffix(filename, ".pod") && contentType == "application/x-perl" {
+		contentType = "text/plain"
+	}
+
+	switch contentType {
+	case "image/png", "image/jpeg", "image/x-ms-bmp",
+		"text/plain", "application/pdf":
+		w.Header().Set("Content-Disposition", "inline")
+	default:
+		w.Header().Set("Content-Disposition",
+			fmt.Sprintf("attachment; filename=%q", filename))
+	}
 	w.Header().Set("Content-Type", contentType)
 	w.Write(content)
 }
