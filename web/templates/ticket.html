@@ -18,6 +18,7 @@
 
 {{define "Body"}}
 {{- $gitHubPrefix := .GitHubPrefix -}}
+{{- $Prefix := .Prefix -}}
 
 {{ with .Content }}
 
@@ -103,9 +104,9 @@
               <dt class="col-6 col-md-5">{{ $k }}:</dt>
               {{- range $v -}}
               {{if eq .Base $tick.Id}}
-              <dd class="col-12 col-md"><a href="/ticket?id={{ .Target }}">{{ .Target }}</a></dd>
+              <dd class="col-12 col-md"><a href="?id={{ .Target }}">{{ .Target }}</a></dd>
               {{else}}
-              <dd class="col-12 col-md"><a href="/ticket?id={{ .Base }}">{{ .Base   }}</a></dd>
+              <dd class="col-12 col-md"><a href="?id={{ .Base }}">{{ .Base   }}</a></dd>
               {{end}}
               {{ end }}
             </div>
@@ -168,7 +169,7 @@
         <div class="content">{{ $a.OriginalContent | html }}</div>
         {{ else if $a.Filename  }}
         <div class="attachment">
-          <a href="/Ticket/Attachment/{{$t.id}}/{{$a.id}}/{{$a.Filename}}">
+          <a href="{{$Prefix}}/Ticket/Attachment/{{$t.id}}/{{$a.id}}/{{$a.Filename}}">
             {{- $a.Filename -}}
           </a> ({{ $a.OriginalContent | len }} bytes)
         </div>
