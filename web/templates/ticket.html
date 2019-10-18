@@ -56,7 +56,6 @@
       <li class="col-lg-4 card">
         <h5>Dates</h5>
         <small class="text-muted">
-          <div class="container">
             <div class="row">
               <dt class="col-6 col-md-4">Created:</dt>
               <dd class="col-12 col-md">{{ .Created }}</dd>
@@ -73,13 +72,11 @@
               <dt class="col-6 col-md-4">Closed:</dt>
               <dd class="col-12 col-md-8">{{ .Closed }}</dd>
             </div>
-          </div>
-
         </small>
       </li>
 
       <li class="col-lg-4 card">
-        <h5>Custom fields</h5>
+        <h5>Custom Fields</h5>
         <small class="text-muted">
           {{ range $k, $v := .CustomFields }}
           <div class="row">
@@ -94,7 +91,6 @@
       <li class="col-lg-4 card">
         <h5>Links</h5>
         <small class="text-muted">
-          <div class="container">
             {{ range $k, $v := .Links }}
             <div class="row">
               <dt class="col-6 col-md-5">{{ $k }}:</dt>
@@ -107,7 +103,6 @@
               {{ end }}
             </div>
             {{ end }}
-          </div>
         </small>
       </li>
 
@@ -115,7 +110,6 @@
       <li class="col-lg-4 card">
         <h5>People</h5>
         <small class="text-muted">
-          <div class="container">
             <div class="row">
               <dt class="col-6 col-md-4">Owner:</dt>
               <dd class="col-12 col-md">{{ obfuscateEmail .Owner.RealName }}
@@ -143,11 +137,13 @@
                   {{end}}
               </dd>
             </div>
-          </div>
         </small>
       </li>
       <!-- /end of row -->
     </ul>
+
+  </div>
+  <div class="container">
 
     <div class="bottom">
       {{ range $toff, $t := .Transactions }}

@@ -19,7 +19,7 @@ div.content {
   margin-left: 1em;
   margin-right: 1em;
   font-family: monospace;
-  white-space: pre;
+  white-space: pre-line;
 }
 
 /* Move down content because we have a fixed navbar that is 3.5rem tall */
@@ -29,8 +29,12 @@ body {
 }
 
 #ticketpage .card {
-  margin: .25em;
-  padding: .75em;
+  border: none;
+  padding-bottom: .75em;
+}
+
+li.card small.text-muted {
+  padding-left: 5px;
 }
 
 #searchpage form#headersearch {
