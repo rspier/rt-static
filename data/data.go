@@ -47,6 +47,7 @@ type Data struct {
 	ticketIndex       []*IndexTicket
 	rtGitHubMap       map[string]string
 	Index             bleve.Index
+	Merged            map[string]string
 }
 
 func New(dataPath string, indexPath string) (*Data, error) {
@@ -74,6 +75,11 @@ func New(dataPath string, indexPath string) (*Data, error) {
 	}
 
 	err = d.newRTGitHubMap()
+	if err != nil {
+		return nil, err
+	}
+
+	err = d.newMerged()
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +116,25 @@ func (d *Data) newRTGitHubMap() error {
 	}
 	defer fh.Close()
 	err = d.LoadRTGitHubMap(fh)
+	if err != nil {
+		// return err ?
+		log.Fatal(err)
+	}
+	return nil
+}
+
+func (d *Data) newMerged() error {
+	d.Merged = make(map[string]string)
+	fh, err := d.ts.GetJSON("merged")
+	if errors.Is(err, os.ErrNotExist) {
+		// this map is optional, but definitely nice to have
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	defer fh.Close()
+	err = d.LoadMerged(fh)
 	if err != nil {
 		// return err ?
 		log.Fatal(err)
@@ -163,6 +188,11 @@ func (d *Data) LoadRTGitHubMap(fh io.Reader) error {
 		d.rtGitHubMap[row[0]] = row[1]
 	}
 	return nil
+}
+
+func (d *Data) LoadMerged(fh io.Reader) error {
+	j := json.NewDecoder(fh)
+	return j.Decode(&d.Merged)
 }
 
 // LoadIndex loads an index.json file.

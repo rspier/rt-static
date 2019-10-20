@@ -170,6 +170,12 @@ var ticketTmpl = page.NewTemplate(
 
 func (s *Server) ticketHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
+
+	if m, ok := s.Tix.Merged[id]; ok {
+		http.Redirect(w, r, fmt.Sprintf("%s/Ticket/Display.html?id=%s", s.Prefix, m), http.StatusTemporaryRedirect)
+		return
+	}
+
 	d, err := s.Tix.GetTicket(id)
 	if isNotFound(err) {
 		http.NotFound(w, r)
