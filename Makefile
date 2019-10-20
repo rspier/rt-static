@@ -1,5 +1,9 @@
 MOD=github.com/rspier/rt-static
 
+default:
+	@echo -n "Targets:  "
+	@egrep '^[a-z]+:' Makefile | cut -d: -f1 | xargs echo
+
 deps:
 	go get -v $(MOD)/...
 
