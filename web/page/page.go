@@ -27,6 +27,7 @@ type Page struct {
 	Site         string
 	ShortSite    string
 	GitHubPrefix string
+	SnapshotTime string
 	// Title is defined in the template... would it be simpler if it was here?
 	Content interface{}
 	ID      string

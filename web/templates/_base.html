@@ -60,8 +60,8 @@
     </div>
   </nav>
   <div id="moved" class="container">
-    <p>{{ .ShortSite }} tickets have moved to <a href="{{ .GitHubPrefix }}"><i class="fa fa-github"></i> GitHub</a>.
-      This site is a static archive of tickets from rt.perl.org.</p>
+    <p>{{ .ShortSite }} bugs have moved to <a href="{{ .GitHubPrefix }}"><i class="fa fa-github"></i> GitHub</a>.
+      This site is a static archive of rt.perl.org{{ if .SnapshotTime }} as of {{.SnapshotTime}}{{end}}.</p>
   </div>
 
   {{ template "Body" .}}

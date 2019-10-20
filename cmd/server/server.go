@@ -35,6 +35,8 @@ import (
 	"github.com/golang/glog"
 )
 
+const snapshotFormat = "2006-01-02T15:04"
+
 var (
 	dataPath     = flag.String("data", "/big/rt-static/out/", "path to json data")
 	indexPath    = flag.String("index", filepath.Join(*dataPath, "index.bleve"), "path to bleve index")
@@ -44,6 +46,7 @@ var (
 	shortSite    = flag.String("shortsite", "Perl 5", "Short name of Site")
 	gitHubPrefix = flag.String("githubprefix", "https://github.com/perl/perl5", "Prefix of GitHub links")
 	staticDir    = flag.String("dir", "web/static", "the directory to serve files from. Defaults to web/static")
+	snapshotTime = flag.String("snapshot", "", "when was the data archive created: "+snapshotFormat)
 )
 
 func waitForFile(f string, r int, d time.Duration) error {
@@ -110,6 +113,14 @@ func main() {
 	flag.Parse()
 	var err error
 
+	var sTime time.Time
+	if *snapshotTime != "" {
+		sTime, err = time.Parse(snapshotFormat, *snapshotTime)
+		if err != nil {
+			glog.Fatal(err)
+		}
+	}
+
 	if strings.HasSuffix(*indexPath, ".zip") {
 		*indexPath, err = extractIndexBleve(*indexPath)
 		if err != nil {
@@ -137,6 +148,7 @@ func main() {
 		ShortSite:    *shortSite,
 		StaticDir:    *staticDir,
 		GitHubPrefix: *gitHubPrefix,
+		SnapshotTime: sTime,
 	}
 	r := s.NewRouter()
 	http.Handle("/", r)

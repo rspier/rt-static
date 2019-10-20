@@ -42,6 +42,7 @@ type Server struct {
 	Prefix       string
 	Site         string
 	ShortSite    string // Perl5 or Perl6
+	SnapshotTime time.Time
 	StaticDir    string
 	GitHubPrefix string // https://github.com/org/repo
 }
@@ -327,5 +328,8 @@ func (s *Server) NewPage(id string, c interface{}) *page.Page {
 	p.GitHubPrefix = s.GitHubPrefix
 	p.ShortSite = s.ShortSite
 	p.Content = c
+	if !s.SnapshotTime.IsZero() {
+		p.SnapshotTime = s.SnapshotTime.Format("Jan _2, 2006")
+	}
 	return p
 }
