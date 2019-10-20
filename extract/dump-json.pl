@@ -43,8 +43,11 @@ sub dump_ticket($);
 sub main() {
   my $outdir = "/var/tmp/out";
   my $queue = "perl5";
-  GetOptions("out=s" => \$outdir);
-  GetOptions("queue=s" => \$queue);
+  
+  GetOptions(
+    "out=s" => \$outdir,
+    "queue=s" => \$queue,
+  );
 
   # This is the query for the tickets that will be extracted:
   my $tx = RT::Tickets->new($RT::SystemUser);
