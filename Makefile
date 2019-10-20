@@ -20,6 +20,8 @@ run:
 		--data "$(DATAZIP)" \
 		--index "$(DATAZIP)" \
 		--site "$(SITE)" \
+		--githubprefix https://github.com/perl/perl5 \
+		--snapshot "2019-10-17T15:30" \
 		--prefix "$(PREFIX)"
 
 VERSION=latest
