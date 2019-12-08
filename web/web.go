@@ -57,6 +57,7 @@ func (s *Server) NewRouter() http.Handler {
 	// pre-StripPrefix URL.
 	r.HandleFunc("/", s.indexHandler)
 	r.HandleFunc("/index.html", s.indexHandler)
+	r.HandleFunc(s.Prefix, s.indexHandler)
 	r.HandleFunc(s.Prefix+"/", s.indexHandler)
 	r.HandleFunc(s.Prefix+"/index.html", s.indexHandler)
 	r.HandleFunc("/robots.txt", s.robotsTxtHandler)
