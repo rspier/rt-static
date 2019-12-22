@@ -43,6 +43,31 @@ go run cmd/index/index.go -data /rtjson/${queue} --alsologtostderr --outdir /rtj
 go run cmd/server/server.go  --data /big/rt-static/perl5/ --index /big/rt-static/perl5/index.bleve
 ```
 
+### Generate merged.csv
+
+Extract merged.json from the archive and use `json_xs` to CSVify it.
+
+```json_xs -e 'my $o=""; while (my ($k,$v) = each %{$_}) { $o.="$k\t$v\n" }; $_=$o' -t string  < merged.json | sort -n > merged.txt```
+
+### Redirects
+
+`rtgithub.txt` is the mapping of old RT issues to new GitHub issue IDs (in a
+single component.)  When expanding to multiple projects, you'll need multiple
+RewriteMaps and rules.
+
+```
+RewriteMap GitHubMap "txt:/path/to/rtgithub.txt"
+RewriteMap Merged "txt:/path/to/merged.txt"
+
+RewriteCond "%{QUERY_STRING}" ".*id=(\d+).*"
+RewriteCond ${Perl5Merged:%1} !=""
+RewriteRule "/(?:Ticket|Public/Bug)/" "https://github.com/Perl/perl5/issues/${GitHubMap:${Merged:%1}}?" [L]
+
+RewriteCond "%{QUERY_STRING}" ".*id=(\d+).*"
+RewriteCond ${GitHubMap:%1} !=""
+RewriteRule "/(?:Ticket|Public/Bug)/" "https://github.com/Perl/perl5/issues/${GitHubMap:%1}?"
+```
+
 ## Disclaimers
 
 This is not an official Google project.
