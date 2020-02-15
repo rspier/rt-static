@@ -29,8 +29,9 @@ type Page struct {
 	GitHubPrefix string
 	SnapshotTime string
 	// Title is defined in the template... would it be simpler if it was here?
-	Content interface{}
-	ID      string
+	Content       interface{}
+	ID            string
+	ServerVersion string
 }
 
 func (p *Page) Render(w http.ResponseWriter, tmpl *template.Template) {

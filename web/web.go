@@ -38,13 +38,14 @@ import (
 
 // Server holds state for the webserver.
 type Server struct {
-	Tix          *data.Data
-	Prefix       string
-	Site         string
-	ShortSite    string // Perl5 or Perl6
-	SnapshotTime time.Time
-	StaticDir    string
-	GitHubPrefix string // https://github.com/org/repo
+	Tix           *data.Data
+	Prefix        string
+	Site          string
+	ShortSite     string // Perl5 or Perl6
+	SnapshotTime  time.Time
+	StaticDir     string
+	GitHubPrefix  string // https://github.com/org/repo
+	ServerVersion string
 }
 
 // NewRouter sets up the http.Handler s for our server.
@@ -334,6 +335,7 @@ func (s *Server) NewPage(id string, c interface{}) *page.Page {
 	p.Prefix = s.Prefix
 	p.GitHubPrefix = s.GitHubPrefix
 	p.ShortSite = s.ShortSite
+	p.ServerVersion = s.ServerVersion
 	p.Content = c
 	if !s.SnapshotTime.IsZero() {
 		p.SnapshotTime = s.SnapshotTime.Format("Jan _2, 2006")

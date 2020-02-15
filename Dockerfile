@@ -13,7 +13,8 @@ RUN go mod download
 COPY . .
 
 # build
-RUN CGO_ENABLED=0 go build -o /go/bin/server github.com/rspier/rt-static/cmd/server
+RUN GIT_VERSION="$(git describe HEAD --always --tags)$( [[ -z "$(git status -s)" ]] || echo '+')" && \
+    CGO_ENABLED=0 go build -ldflags "-X main.serverVersion=${GIT_VERSION}" -o /go/bin/server github.com/rspier/rt-static/cmd/server
 
 RUN touch /.empty
 

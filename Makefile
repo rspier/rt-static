@@ -14,8 +14,11 @@ build:
 DATAZIP=/big/rt-static/perl5.zip
 SITE=perl5
 PREFIX=/perl5
+GIT_VERSION="$(shell git describe HEAD --always --tags)$(shell test -z \$(git status -s) || echo '+')"
 run:
-	go run cmd/server/server.go \
+	go run \
+	    -ldflags "-X main.serverVersion=$(GIT_VERSION)" \
+		cmd/server/server.go \
 		--logtostderr \
 		--data "$(DATAZIP)" \
 		--index "$(DATAZIP)" \

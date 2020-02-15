@@ -37,6 +37,8 @@ import (
 
 const snapshotFormat = "2006-01-02T15:04"
 
+var serverVersion = "unknown" // set to version at build time
+
 var (
 	dataPath     = flag.String("data", "/big/rt-static/out/", "path to json data")
 	indexPath    = flag.String("index", filepath.Join(*dataPath, "index.bleve"), "path to bleve index")
@@ -142,13 +144,14 @@ func main() {
 	}
 
 	s := &web.Server{
-		Prefix:       *prefix,
-		Tix:          data,
-		Site:         *site,
-		ShortSite:    *shortSite,
-		StaticDir:    *staticDir,
-		GitHubPrefix: *gitHubPrefix,
-		SnapshotTime: sTime,
+		Prefix:        *prefix,
+		Tix:           data,
+		Site:          *site,
+		ShortSite:     *shortSite,
+		StaticDir:     *staticDir,
+		GitHubPrefix:  *gitHubPrefix,
+		SnapshotTime:  sTime,
+		ServerVersion: serverVersion,
 	}
 	r := s.NewRouter()
 	http.Handle("/", r)
