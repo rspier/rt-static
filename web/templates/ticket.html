@@ -147,7 +147,7 @@
 
     <div class="bottom">
       {{ range $toff, $t := .Transactions }}
-      {{ if or (eq $t.Type "Correspond") (eq $t.Type "Create") (eq $t.Type "Status") }}
+      {{ if or (eq $t.Type "Correspond") (eq $t.Type "Comment") (eq $t.Type "Create") (eq $t.Type "Status") }}
       <div class="jumbotron m0">
         <h4><a name="txn-{{ $t.id }}" href="#txn-{{ $t.id }}"> #</a>&nbsp;{{- obfuscateEmail $t.Creator.RealName }}
           <{{ obfuscateEmail $t.Creator.EmailAddress }}>
