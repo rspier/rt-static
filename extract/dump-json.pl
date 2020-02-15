@@ -297,6 +297,8 @@ sub dump_ticket($) {
 
 # The easiest way to get a list of all the merged tickets is to go
 # straight to the database.
+# TODO: This outputs the merged ticket map for all queues, not just the one
+# we care about.  It could be limited, but it doesn't hurt anything.
 sub dump_merged_tickets() {
     my $dbh = $RT::Handle->dbh;
     my $rows = $dbh->selectall_arrayref(
