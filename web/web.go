@@ -18,9 +18,11 @@ limitations under the License.
 */
 
 import (
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -67,6 +69,7 @@ func (s *Server) NewRouter() http.Handler {
 	r.HandleFunc(s.Prefix+"/Search/Simple.html", s.searchHandler)
 	// route to serve static content
 	r.PathPrefix(s.Prefix + "/static").Handler(http.StripPrefix(s.Prefix+"/static", http.FileServer(http.Dir(s.StaticDir))))
+	r.HandleFunc(s.Prefix+"/rtgithub.csv", s.rtGitHubCSVHandler)
 
 	return logWrap(http.TimeoutHandler(r, 10*time.Second, "response took too long"))
 }
@@ -161,6 +164,37 @@ func isNotFound(err error) bool {
 
 func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("%s/Search/Simple.html?q=status:*", s.Prefix), http.StatusTemporaryRedirect)
+}
+
+func (s *Server) rtGitHubCSVHandler(w http.ResponseWriter, r *http.Request) {
+	fh, err := s.Tix.RTGitHubCSV()
+	if err != nil {
+		log.Printf("GetTRTGitHubCSV(): %v", err)
+		http.Error(w, "Internal Error", 500)
+		return
+	}
+	defer fh.Close()
+
+	w.Header().Add("Content-Type", "text/csv; charset=utf-8")
+
+	var ww io.Writer = w
+
+	if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+		zw := gzip.NewWriter(w)
+		defer zw.Close()
+		ww = zw
+		w.Header().Add("Content-Encoding", "gzip")
+	}
+	// http.ServeContent would be better as it has all the bells and whistles,
+	// but requires an io.ReadSeeker, which means we need to read the file and
+	// buffer it in memory first.
+	_, err = io.Copy(ww, fh)
+	if err != nil {
+		log.Printf("Copy(w,fh): %v", err)
+		http.Error(w, "Internal Error", 500)
+		return
+	}
+
 }
 
 var ticketTmpl = page.NewTemplate(

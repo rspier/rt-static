@@ -104,9 +104,17 @@ func (d *Data) newIndex() error {
 	return nil
 }
 
+// RTGitHubCSV returns the filename for the mapping of tickets from RT to GitHub
+const RTGitHubCSV = "rtgithub.csv"
+
+// RTGitHubCSV returns a io.ReadCloser pointing to the rtgithub.csv file
+func (d *Data) RTGitHubCSV() (io.ReadCloser, error) {
+	return d.ts.GetFile(RTGitHubCSV)
+}
+
 func (d *Data) newRTGitHubMap() error {
 	d.rtGitHubMap = make(map[string]string)
-	fh, err := d.ts.GetFile("rtgithub.csv")
+	fh, err := d.ts.GetFile(RTGitHubCSV)
 	if errors.Is(err, os.ErrNotExist) {
 		// this map is optional, but definitely nice to have
 		return nil
