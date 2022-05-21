@@ -1,4 +1,4 @@
-FROM golang:alpine as BUILDER
+FROM golang:1.18-alpine as BUILDER
 
 RUN apk update && apk add --no-cache git
 WORKDIR /src
