@@ -7,14 +7,14 @@ require (
 	github.com/golang/glog v1.0.0
 	github.com/gorilla/mux v1.8.0
 	github.com/schollz/progressbar/v2 v2.15.0
-	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
+	golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde
 )
 
 require (
-	github.com/RoaringBitmap/roaring v1.1.0 // indirect
-	github.com/bits-and-blooms/bitset v1.2.2 // indirect
+	github.com/RoaringBitmap/roaring v1.2.1 // indirect
+	github.com/bits-and-blooms/bitset v1.3.0 // indirect
 	github.com/blevesearch/go-porterstemmer v1.0.3 // indirect
-	github.com/blevesearch/mmap-go v1.0.3 // indirect
+	github.com/blevesearch/mmap-go v1.0.4 // indirect
 	github.com/blevesearch/segment v0.9.0 // indirect
 	github.com/blevesearch/snowballstem v0.9.0 // indirect
 	github.com/blevesearch/zap/v11 v11.0.14 // indirect
@@ -30,9 +30,9 @@ require (
 	github.com/steveyen/gtreap v0.1.0 // indirect
 	github.com/willf/bitset v1.1.11 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 )
 
 require gopkg.in/yaml.v2 v2.2.8 // indirect
