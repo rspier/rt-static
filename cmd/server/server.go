@@ -154,8 +154,9 @@ func main() {
 		ServerVersion: serverVersion,
 	}
 	r := s.NewRouter()
-	http.Handle("/", r)
+	sm := http.NewServeMux()
+	sm.Handle("/", r)
 
 	glog.Infof("Listening on port %v", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), sm))
 }
