@@ -32,7 +32,7 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )
 
 require gopkg.in/yaml.v2 v2.2.8 // indirect
