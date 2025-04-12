@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/blevesearch/bleve v1.0.14
-	github.com/golang/glog v1.2.1
+	github.com/golang/glog v1.2.4
 	github.com/gorilla/mux v1.8.1
 	github.com/schollz/progressbar/v2 v2.15.0
 	golang.org/x/sync v0.7.0
